@@ -20,6 +20,7 @@
           pkgs.curl
           pkgs.unzip
           pkgs.typst
+          pkgs.just
           mdq.packages.${system}.default
         ];
       };
