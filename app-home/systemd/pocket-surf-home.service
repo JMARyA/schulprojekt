@@ -1,0 +1,27 @@
+[Unit]
+Description=Pocket Surf Home Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=pocket
+Group=pocket
+WorkingDirectory=/opt/pocket-surf
+ExecStart=/usr/local/bin/pocket-surf-home
+Restart=always
+RestartSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pocket-surf-home
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Environment
+Environment=RUST_LOG=info
+
+[Install]
+WantedBy=multi-user.target
