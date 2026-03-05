@@ -1,0 +1,74 @@
+# Caddyfile for Pocket Surf
+# Central reverse proxy routing all services
+
+# Global options
+{
+    # Disable automatic HTTPS (we're using self-signed certs for local network)
+    auto_https disable_redirects
+
+    # Admin API endpoint
+    admin localhost:2019
+}
+
+# Home Dashboard
+home.local {
+    reverse_proxy localhost:3000
+
+    log {
+        output file /var/log/caddy/home.log
+    }
+}
+
+# Alternative: root domain also goes to home
+pocket.local {
+    reverse_proxy localhost:3000
+
+    log {
+        output file /var/log/caddy/pocket.log
+    }
+}
+
+# SFTPGo File Server
+files.local {
+    reverse_proxy localhost:8080
+
+    log {
+        output file /var/log/caddy/files.log
+    }
+}
+
+# Vikunja Task Management
+tasks.local {
+    reverse_proxy localhost:3456
+
+    log {
+        output file /var/log/caddy/tasks.log
+    }
+}
+
+# BookStack Knowledge Base
+wiki.local {
+    reverse_proxy localhost:6875
+
+    log {
+        output file /var/log/caddy/wiki.log
+    }
+}
+
+# Local Chat Application
+chat.local {
+    reverse_proxy localhost:8000
+
+    log {
+        output file /var/log/caddy/chat.log
+    }
+}
+
+# Catch-all: redirect unknown domains to home
+:80 {
+    redir https://home.local{uri} permanent
+}
+
+:443 {
+    redir https://home.local{uri} permanent
+}
