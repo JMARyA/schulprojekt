@@ -9,3 +9,9 @@ docs:
 
 docs-watch:
     nix develop --command typst watch documentation.typ
+
+presentation:
+    nix develop --command typst compile presentation.typ
+
+presentation-watch:
+    nix develop --command typst watch presentation.typ
