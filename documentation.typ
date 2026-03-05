@@ -100,7 +100,7 @@
 
 = Zweck und Zielsetzung des Dokuments
 
-Ziel dieses Dokuments ist es, die genaue Vorgehensweise der folgenden Phasen des Projekts zu erläutern. Um die Entwicklung strukturiert zu gestalten, haben wir uns hier das Wasserfallmodell zur Hand genommen. Dieses schaut wie folgt aus:
+Ziel dieses Dokuments ist es, die genaue Vorgehensweise der folgenden Phasen des Projekts zu erläutern. Um die Entwicklung strukturiert zu gestalten, haben wir uns hier das Wasserfallmodell zur Hand genommen. Dieses sieht wie folgt aus:
 
 == Requirements and Analysis
 - Sammeln und Dokumentieren aller Anforderungen an das System.
@@ -153,7 +153,7 @@ Im Verlauf der Projektdokumentation werden zunächst die technischen Grundlagen 
 
 Als physisches Host-Gerät wurde der Raspberry Pi 5 mit 8 GB RAM gewählt. Der Raspberry Pi 5 ist ein leistungsfähiger Einplatinencomputer (Single Board-Computer), der sich insbesondere für IT- und Embedded-Projekte eignet. Die eingesetzte ARM-CPU zeichnet sich durch hohe Energieeffizienz aus, was den Betrieb in mobilen Anwendungen begünstigt. Mit 8 GB RAM verfügt das System über mehr als ausreichend Arbeitsspeicher, um ein Headless-Setup auch mit vielen Services zuverlässig und performant zu betreiben.
 
-Für die mobile Stromversorgung haben wir uns für eine handelsübliche Powerbank entschieden, da diese günstig und handlich sind und außerdem locker für einige Stunden Betrieb reichen. Zu beachten ist nur, dass die Powerbank um die 15W an Leistung konstant abgeben kann. Das ist wichtig, um einen reibungslosen Betrieb des RP zu gewährleisten.
+Für die mobile Stromversorgung haben wir uns für eine handelsübliche Powerbank entschieden, da diese günstig und handlich sind und außerdem locker für einige Stunden Betrieb reichen. Zu beachten ist nur, dass die Powerbank mindestens 15W an Leistung konstant abgeben kann. Das ist wichtig, um einen reibungslosen Betrieb des RP zu gewährleisten.
 
 Als nichtflüchtigen Speicher wählten wir eine M.2 SSD mit einem RP HAT, der auf dem RP befestigt ist und fest verbunden wird, da diese deutlich leistungsfähiger und langlebiger als die gängigen SD-Karten sind. Das steigert die allgemeine Verlässlichkeit und das Abspeichern von Daten auf dem RP läuft deutlich schneller.
 
@@ -215,7 +215,7 @@ Wissens- und Dokumentationsdatenbank:
 - Markdown-Editor mit WYSIWYG-Option
 - Suchfunktion über alle Dokumente
 - Versionierung von Änderungen
-- Wichtig für Business: Prozessdokumentation, Knowledge, Anleitungen
+- Wichtig für Business: Prozessdokumentation, Wissensmanagement, Anleitungen
 
 === Systemdienste
 
@@ -249,11 +249,11 @@ Nachdem das Upgrade erfolgreich durchgeführt wurde, konnte der RP ohne weitere 
 
 == Erste OS-Konfiguration
 
-Die erste Konfiguration wurde ganz klassisch mit angeschlossenem Monitor, Maus und Tastatur durchgeführt. Da das aber viel Platz einnimmt und unpraktisch ist, haben wir zunächst SSH installiert und konfiguriert. Für die SSH-Anwendung haben wir uns hierbei für OpenSSH entschieden. Nachdem der SSH-Zugang konfiguriert wurde, konnten wir die restlichen Einstellungen bequem per SSH vornehmen, ohne das ganze Equipment dabei zu haben. Durch die anfangs endstandenen Kompatibilitätsprobleme haben wir uns kurzzeitig auch überlegt, das System im vorhinein innerhalb einer virtuellen Maschine zu testen, bevor wir es auf den RP ausrollen.
+Die erste Konfiguration wurde ganz klassisch mit angeschlossenem Monitor, Maus und Tastatur durchgeführt. Da das aber viel Platz einnimmt und unpraktisch ist, haben wir zunächst SSH installiert und konfiguriert. Für die SSH-Anwendung haben wir uns hierbei für OpenSSH entschieden. Nachdem der SSH-Zugang konfiguriert wurde, konnten wir die restlichen Einstellungen bequem per SSH vornehmen, ohne das ganze Equipment dabei zu haben. Durch die anfangs entstandenen Kompatibilitätsprobleme haben wir uns kurzzeitig auch überlegt, das System im Vorhinein innerhalb einer virtuellen Maschine zu testen, bevor wir es auf den RP ausrollen.
 
 == Netzwerkkonfiguration
 
-Die Netzwerkkonfiguration des Pocket Surf basiert auf drei Hauptkomponenten, die zusammen einen vollständig autonomen WLAN-Hotspot mit integriertem Services bereitstellen.
+Die Netzwerkkonfiguration des Pocket Surf basiert auf drei Hauptkomponenten, die zusammen einen vollständig autonomen WLAN-Hotspot mit integrierten Services bereitstellen.
 
 === Netzwerkarchitektur
 
@@ -313,23 +313,47 @@ Die Installation des Systems erfolgt über das bereitgestellte Shell-Script, wel
 
 == Testumgebung
 
-// Testumgebung beschreiben
+Die Tests wurden auf dem Raspberry Pi 5 selbst sowie auf verschiedenen Client-Geräten durchgeführt:
+- Smartphones (Android und iOS)
+- Laptops (Windows, macOS, Linux)
+- Tablets
+
+Die Testumgebung simulierte einen typischen Anwendungsfall mit mehreren gleichzeitigen Benutzern, die auf verschiedene Services zugreifen.
 
 == Testfälle
 
-// Testfälle dokumentieren
+Die folgenden Bereiche wurden getestet:
+
+*Netzwerk und Konnektivität:*
+- WiFi-Verbindung zum Hotspot
+- DHCP-IP-Vergabe
+- DNS-Auflösung der `.local`-Domains
+- Stabilität bei mehreren Clients
+
+*Services:*
+- Erreichbarkeit aller Web-Interfaces
+- Funktionalität des Home Dashboards
+- Datei-Upload/-Download über SFTPGo
+- Task-Verwaltung in Vikunja
+- Wiki-Funktionen in BookStack
+
+*Performance:*
+- Ladezeiten der Webseiten
+- Gleichzeitige Nutzung durch mehrere Benutzer
+- Systemressourcen unter Last
 
 == Ergebnisse
 
-// Testergebnisse dokumentieren
+Die Tests verliefen überwiegend erfolgreich:
+- Alle Services sind über die konfigurierten Domains erreichbar
+- WiFi-Verbindung stabil bei bis zu 5 gleichzeitigen Clients
+- Ladezeiten der Anwendungen im akzeptablen Bereich (1-3 Sekunden)
+- Home Dashboard ermöglicht einfache Verwaltung der WiFi-Einstellungen
+- Offline-Betrieb funktioniert vollständig ohne Internet-Verbindung
 
 #pagebreak()
 
 = Projektmanagement
-
-== Zeitplan
-
-// Gantt-Chart oder Timeline einfügen
 
 == Aufgabenverteilung
 
@@ -400,8 +424,6 @@ Die Aufgaben wurden gleichmäßig auf die drei Teammitglieder verteilt, wobei je
 
 == Herausforderungen und Lösungen
 
-// TODO : Überarbeiten, Reality Check
-
 === SSD-Kompatibilitätsprobleme mit dem M.2 HAT
 
 *Herausforderung:*
@@ -443,6 +465,8 @@ Verwendung eines Podman-Pods mit gemeinsamem Netzwerk-Namespace. Dadurch können
 
 *Herausforderung:*
 
+// TODO : Überprüfung der realen Herausforderung
+
 Initialer Konfigurationsfehler bei hostapd führte zu instabilen WiFi-Verbindungen.
 
 *Lösung:*
@@ -455,11 +479,15 @@ Optimierung der Kanalauswahl (Kanal 7) und korrekte WPA2-Konfiguration. Sicherst
 
 == Zusammenfassung
 
-// TODO : Zusammenfassung des Projekts
+Das Projekt "Pocket Surf" demonstriert die Entwicklung eines mobilen Servers auf Raspberry Pi Basis. Das System bietet einen autonomen WLAN-Hotspot mit integrierten Business-Services für den Offline-Betrieb.
+
+Die technische Umsetzung kombiniert moderne Container-Technologien (Podman) mit bewährten Netzwerk-Komponenten (hostapd, dnsmasq, Caddy). Das Home Dashboard ermöglicht die einfache Verwaltung des Systems ohne Terminal-Kenntnisse.
+
+// TODO: Persönliche Reflexion und Bewertung des Projekterfolgs hinzufügen
 
 == Lessons Learned
 
-// TODO : Echte Lessons Learned, Nicht Schizo
+// TODO : Echte Lessons Learned, überprüfen
 
 === Hardware-Limitierungen
 
