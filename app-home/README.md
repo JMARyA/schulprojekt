@@ -36,21 +36,52 @@ The application runs on port 3000 and is accessible via `home.local` when routed
 
 ## Configuration Management
 
-The app reads and updates configuration files in `../server-config/`:
-- `hostapd.conf` - WiFi hotspot configuration
+The app reads and updates configuration files mounted from the host:
+- `/config/hostapd.conf` - WiFi hotspot configuration (via volume mount)
+- `/config/dnsmasq.conf` - DNS/DHCP configuration
 
-Changes to WiFi settings require restarting the `hostapd` service (requires root privileges).
+Configuration files are mounted from `/etc/pocket-surf/` on the host system.
 
-## Production Deployment
-
+Changes to WiFi settings update the host files and require restarting `hostapd`:
 ```bash
-# Build release binary
-cargo build --release
+sudo systemctl restart hostapd
+```
 
-# Copy binary to /usr/local/bin
-sudo cp target/release/pocket-surf-home /usr/local/bin/
+## Container Deployment
 
-# Create systemd service (see systemd/ directory)
-sudo systemctl enable pocket-surf-home
-sudo systemctl start pocket-surf-home
+### Build Container Image
+```bash
+podman build -t localhost/pocket-surf-home:latest .
+```
+
+### Run Standalone (for testing)
+```bash
+podman run -d \
+  --name pocket-surf-home \
+  -p 3000:3000 \
+  -v /etc/pocket-surf/hostapd.conf:/config/hostapd.conf:Z \
+  -v /etc/pocket-surf/dnsmasq.conf:/config/dnsmasq.conf:Z \
+  localhost/pocket-surf-home:latest
+```
+
+### Production Deployment
+
+The app is deployed via systemd Podman quadlets. See `../server-config/quadlets/pocket-surf-home.container`.
+
+Install the full stack:
+```bash
+cd ../server-config
+sudo ./install-podman.sh
+```
+
+Manage the service:
+```bash
+# Check status
+systemctl status pocket-surf-home.service
+
+# View logs
+journalctl -u pocket-surf-home.service -f
+
+# Restart
+systemctl restart pocket-surf-home.service
 ```

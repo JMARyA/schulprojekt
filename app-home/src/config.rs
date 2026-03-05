@@ -22,12 +22,18 @@ impl Default for WifiConfig {
     }
 }
 
-const HOSTAPD_CONF_PATH: &str = "../server-config/hostapd.conf";
-
 impl WifiConfig {
+    /// Get the path to hostapd.conf from environment or use default
+    fn get_hostapd_path() -> String {
+        std::env::var("CONFIG_PATH")
+            .map(|p| format!("{}/hostapd.conf", p))
+            .unwrap_or_else(|_| "/config/hostapd.conf".to_string())
+    }
+
     /// Read current WiFi configuration from hostapd.conf
     pub fn read() -> io::Result<Self> {
-        let path = Path::new(HOSTAPD_CONF_PATH);
+        let path_str = Self::get_hostapd_path();
+        let path = Path::new(&path_str);
 
         if !path.exists() {
             return Ok(Self::default());
@@ -68,11 +74,12 @@ impl WifiConfig {
     /// Write WiFi configuration to hostapd.conf
     pub fn write(&self) -> io::Result<()> {
         let content = self.generate_hostapd_conf();
+        let path = Self::get_hostapd_path();
 
         // Write to temp file first, then move
-        let temp_path = format!("{}.tmp", HOSTAPD_CONF_PATH);
+        let temp_path = format!("{}.tmp", path);
         fs::write(&temp_path, content)?;
-        fs::rename(&temp_path, HOSTAPD_CONF_PATH)?;
+        fs::rename(&temp_path, &path)?;
 
         Ok(())
     }
