@@ -1,0 +1,34 @@
+[Unit]
+Description=Pocket Surf Home Dashboard
+After=pocket-surf.pod.service
+Requires=pocket-surf.pod.service
+
+[Container]
+Image=localhost/pocket-surf-home:latest
+Pod=pocket-surf.pod
+
+# Mount configuration files
+Volume=%E/pocket-surf/hostapd.conf:/config/hostapd.conf:Z
+Volume=%E/pocket-surf/dnsmasq.conf:/config/dnsmasq.conf:Z
+
+# Environment
+Environment=RUST_LOG=info
+Environment=CONFIG_PATH=/config
+
+# Auto-restart on failure
+Restart=always
+RestartSec=10s
+
+# Health check
+HealthCmd=/usr/bin/curl -f http://localhost:3000/ || exit 1
+HealthInterval=30s
+HealthRetries=3
+HealthStartPeriod=10s
+
+[Service]
+# Automatic updates and restart
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

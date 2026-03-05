@@ -1,0 +1,32 @@
+[Unit]
+Description=Pocket Surf Vikunja API
+After=pocket-surf.pod.service
+Requires=pocket-surf.pod.service
+
+[Container]
+Image=docker.io/vikunja/api:latest
+Pod=pocket-surf.pod
+
+# Volumes
+Volume=vikunja-files:/app/vikunja/files:Z
+
+# Environment
+Environment=VIKUNJA_SERVICE_PUBLICURL=http://tasks.local
+Environment=VIKUNJA_DATABASE_TYPE=sqlite
+Environment=VIKUNJA_DATABASE_PATH=/app/vikunja/files/vikunja.db
+
+# Auto-restart
+Restart=always
+RestartSec=10s
+
+# Health check
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3456/api/v1/info || exit 1
+HealthInterval=30s
+HealthRetries=3
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

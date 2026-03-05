@@ -1,0 +1,36 @@
+[Unit]
+Description=Pocket Surf BookStack Database
+After=pocket-surf.pod.service
+Requires=pocket-surf.pod.service
+
+[Container]
+Image=lscr.io/linuxserver/mariadb:latest
+Pod=pocket-surf.pod
+
+# Volumes
+Volume=bookstack-db-data:/config:Z
+
+# Environment
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=MYSQL_ROOT_PASSWORD=bookstack
+Environment=MYSQL_DATABASE=bookstackapp
+Environment=MYSQL_USER=bookstack
+Environment=MYSQL_PASSWORD=bookstack
+
+# Auto-restart
+Restart=always
+RestartSec=10s
+
+# Health check
+HealthCmd=/usr/bin/mysql -u bookstack -pbookstack -e 'SELECT 1' bookstackapp || exit 1
+HealthInterval=30s
+HealthRetries=3
+HealthStartPeriod=30s
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

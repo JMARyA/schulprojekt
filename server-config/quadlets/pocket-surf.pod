@@ -1,0 +1,11 @@
+[Unit]
+Description=Pocket Surf Pod
+After=network-online.target
+Wants=network-online.target
+
+[Pod]
+PodmanArgs=--infra=true
+Network=pasta
+
+[Install]
+WantedBy=multi-user.target default.target

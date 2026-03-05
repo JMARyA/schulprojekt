@@ -1,0 +1,30 @@
+[Unit]
+Description=Pocket Surf Vikunja Frontend
+After=pocket-surf-vikunja-api.container.service
+Requires=pocket-surf-vikunja-api.container.service pocket-surf.pod.service
+
+[Container]
+Image=docker.io/vikunja/frontend:latest
+Pod=pocket-surf.pod
+
+# Port
+PublishPort=3456:80
+
+# Environment
+Environment=VIKUNJA_API_URL=http://localhost:3456/api/v1
+
+# Auto-restart
+Restart=always
+RestartSec=10s
+
+# Health check
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+HealthInterval=30s
+HealthRetries=3
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target
