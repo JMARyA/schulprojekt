@@ -12,7 +12,7 @@
   outputs = { self, nixpkgs, mdq }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
+      pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     in
     {
       devShells.${system}.default = pkgs.mkShell {
@@ -24,7 +24,12 @@
           mdq.packages.${system}.default
         ];
 
-        TYPST_FONT_PATHS = "${pkgs.dejavu_fonts}/share/fonts";
+        TYPST_FONT_PATHS = builtins.concatStringsSep ":" [
+          "${pkgs.inter}/share/fonts"
+          "${pkgs.source-sans}/share/fonts"
+          "${pkgs.ibm-plex}/share/fonts"
+          "${pkgs.corefonts}/share/fonts/truetype"
+        ];
       };
     };
 }

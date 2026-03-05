@@ -56,6 +56,12 @@
   #text(size: 18pt, fill: gray)[
     Erion Sahitaj • Angelo Rodriguez • Matthias Holme
   ]
+
+  #v(0.5em)
+
+  #text(size: 16pt, fill: gray)[
+    10. Februar 2026
+  ]
 ]
 
 #pagebreak()
