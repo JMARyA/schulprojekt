@@ -23,6 +23,8 @@
           pkgs.just
           mdq.packages.${system}.default
         ];
+
+        TYPST_FONT_PATHS = "${pkgs.dejavu_fonts}/share/fonts";
       };
     };
 }
