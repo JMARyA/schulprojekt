@@ -7,30 +7,22 @@ Requires=pocket-surf.pod.service
 Image=docker.io/drakkan/sftpgo:latest
 Pod=pocket-surf.pod
 
-# Ports
-PublishPort=8080:8080
-PublishPort=2022:2022
-
-# Volumes
 Volume=sftpgo-data:/srv/sftpgo:Z
 Volume=sftpgo-home:/var/lib/sftpgo:Z
 
-# Environment
 Environment=SFTPGO_HTTPD__BIND_PORT=8080
 Environment=SFTPGO_HTTPD__BIND_ADDRESS=0.0.0.0
 
-# Auto-restart
 Restart=always
 RestartSec=10s
 
-# Health check
 HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
 HealthInterval=30s
 HealthRetries=3
 
 [Service]
 Restart=always
-TimeoutStartSec=900
+TimeoutStartSec=300
 
 [Install]
 WantedBy=multi-user.target default.target

@@ -1,0 +1,16 @@
+[Unit]
+Description=Pocket Surf Home Dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/pocket-surf-home
+Environment=RUST_LOG=info
+Environment=CONFIG_PATH=/etc/pocket-surf
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

@@ -4,8 +4,11 @@ After=network-online.target
 Wants=network-online.target
 
 [Pod]
+# Host networking: all containers share the host network namespace.
+# This allows containers to reach each other and host services via localhost,
+# and avoids the need for explicit port publishing.
 PodmanArgs=--infra=true
-Network=pasta
+Network=host
 
 [Install]
 WantedBy=multi-user.target default.target

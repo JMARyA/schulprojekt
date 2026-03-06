@@ -64,7 +64,8 @@
   #v(0.5cm)
 
   #text(size: 12pt)[
-    Schulprojekt Berufsschule Lauingen 2026
+    Staatliche Berufsschule Lauingen\
+    Friedrich-Ebert-Straße 14, 89415 Lauingen a.d. Donau
   ]
 
   #v(2cm)
@@ -160,7 +161,7 @@ Die letzte Phase umfasst die kontinuierliche Wartung des Systems, einschließlic
 
 Im Rahmen dieses Projekts wurde ein mobiler Server auf Basis eines Raspberry Pi 5 mit dem Betriebssystem Raspberry Pi OS konzipiert und umgesetzt. Ziel war es, eine kompakte und flexibel einsetzbare Serverlösung zu entwickeln, die unabhängig von stationärer Infrastruktur betrieben werden kann.
 
-Da es sich hierbei um gängige Hard- und Software handelt, hat man hier die Möglichkeit eine sehr hohe Bandbreite an frei verfügbarer Open-Source-Software (FOSS) zu installieren und zu konfigurieren. Somit sind die Einsatzmöglichkeiten eines solchen Systems fast grenzenlos.
+Da es sich hierbei um gängige Hard- und Software handelt, hat man hier die Möglichkeit, eine sehr hohe Bandbreite an frei verfügbarer Open-Source-Software (FOSS) zu installieren und zu konfigurieren. Somit sind die Einsatzmöglichkeiten eines solchen Systems nahezu unbegrenzt.
 
 Im Verlauf der Projektdokumentation werden zunächst die technischen Grundlagen erläutert, anschließend die Planung und Umsetzung beschrieben sowie die Konfiguration der eingesetzten Dienste dokumentiert. Abschließend erfolgt eine Bewertung des Projektergebnisses hinsichtlich Funktionalität, Sicherheit und Erweiterbarkeit.
 
@@ -172,7 +173,7 @@ Im Verlauf der Projektdokumentation werden zunächst die technischen Grundlagen 
 
 Als physisches Host-Gerät wurde der Raspberry Pi 5 mit 8 GB RAM gewählt. Der Raspberry Pi 5 ist ein leistungsfähiger Einplatinencomputer (Single Board-Computer), der sich insbesondere für IT- und Embedded-Projekte eignet. Die eingesetzte ARM-CPU zeichnet sich durch hohe Energieeffizienz aus, was den Betrieb in mobilen Anwendungen begünstigt. Mit 8 GB RAM verfügt das System über mehr als ausreichend Arbeitsspeicher, um ein Headless-Setup auch mit vielen Services zuverlässig und performant zu betreiben.
 
-Für die mobile Stromversorgung haben wir uns für eine handelsübliche Powerbank entschieden, da diese günstig und handlich sind und außerdem locker für einige Stunden Betrieb reichen. Zu beachten ist nur, dass die Powerbank mindestens 15W an Leistung konstant abgeben kann. Das ist wichtig, um einen reibungslosen Betrieb des RP zu gewährleisten.
+Für die mobile Stromversorgung haben wir uns für eine handelsübliche Powerbank entschieden, da diese kostengünstig, kompakt und für mehrere Stunden Betrieb ausreichend sind. Zu beachten ist nur, dass die Powerbank mindestens 15W an Leistung konstant abgeben kann. Das ist wichtig, um einen reibungslosen Betrieb des RP zu gewährleisten.
 
 Als nichtflüchtigen Speicher wählten wir eine M.2 SSD mit einem RP HAT, der auf dem RP befestigt ist und fest verbunden wird, da diese deutlich leistungsfähiger und langlebiger als die gängigen SD-Karten sind. Das steigert die allgemeine Verlässlichkeit und das Abspeichern von Daten auf dem RP läuft deutlich schneller.
 
@@ -239,7 +240,7 @@ Wissens- und Dokumentationsdatenbank:
 === Systemdienste
 
 ==== Dnsmasq (DNS/DHCP)
-Netzwerk-Infrastruktur fürs lokale Netz:
+Netzwerk-Infrastruktur für das lokale Netz:
 - DHCP-Server für automatische IP-Vergabe
 - DNS-Server für lokale Namensauflösung
 - Ermöglicht Betrieb als eigenständiger WLAN-Hotspot
@@ -259,13 +260,13 @@ Zentraler Reverse Proxy und Webserver:
 === Technische Grundlagen der Anwendungen
 Die Anwendungen des Systems werden containerisiert betrieben. Durch den Einsatz von Containern wird eine klare Isolation zwischen den einzelnen Diensten erreicht. Dies erhöht sowohl die Sicherheit als auch die Wartbarkeit des Systems, da jede Anwendung in einer eigenen, voneinander unabhängigen Umgebung ausgeführt wird.
 
-Ein weiterer Vorteil dieser Architektur besteht darin, dass jede Anwendung ihre eigenen Abhängigkeiten und Laufzeitumgebungen mitbringen kann, ohne Konflikte mit anderen Diensten zu verursachen. Updates oder Änderungen an einem Dienst können somit durchgeführt werden, ohne den Betrieb der übrigen Anwendungen zu beeinträchtigen. Ein weiterer Vorteil, der sich dadurch ergibt, ist das jeder Entwickler mit der Sprache und den Tools arbeiten kann, die er am besten beherrscht. Die Technologien können bei containerisierten Anwendungen frei gewählt und über HTTP kann mit jeder Anwendung standardisiert interagiert werden.
+Ein weiterer Vorteil dieser Architektur besteht darin, dass jede Anwendung ihre eigenen Abhängigkeiten und Laufzeitumgebungen mitbringen kann, ohne Konflikte mit anderen Diensten zu verursachen. Updates oder Änderungen an einem Dienst können somit durchgeführt werden, ohne den Betrieb der übrigen Anwendungen zu beeinträchtigen. Ein weiterer Vorteil, der sich dadurch ergibt, ist, dass jeder Entwickler mit der Sprache und den Tools arbeiten kann, die er am besten beherrscht. Die Technologien können bei containerisierten Anwendungen frei gewählt und über HTTP kann mit jeder Anwendung standardisiert interagiert werden.
 
 ==== Home App
 
 Die Home App stellt die zentrale Verwaltungsoberfläche des Systems dar und dient als Einstiegspunkt für die Benutzer. Sie fungiert als Dashboard, über das alle verfügbaren Dienste erreicht und grundlegende Systemeinstellungen verwaltet werden können.
 
-Die Anwendung wurde in der Programmiersprache Rust implementiert. Rust bietet eine hohe Geschwindigkeit, bietet sicheres Speichermanagement und ist als Systemsprache extrem resourcenschonend . Dadurch eignet sich die Sprache besonders gut für Systeme mit begrenzten Ressourcen wie den Raspberry Pi.
+Die Anwendung wurde in der Programmiersprache Rust implementiert. Rust bietet hohe Ausführungsgeschwindigkeit, sicheres Speichermanagement und ist als Systemsprache extrem ressourcenschonend. Dadurch eignet sich die Sprache besonders gut für Systeme mit begrenzten Ressourcen wie den Raspberry Pi.
 
 Die Home App ist eng mit dem zugrunde liegenden System integriert und übernimmt unter anderem administrative Aufgaben wie die Verwaltung des WLAN-Hotspots sowie grundlegende Geräteadministration. Die Benutzeroberfläche wird als Webanwendung bereitgestellt und besteht aus klassischen Webtechnologien wie HTML und CSS. Dadurch kann die Oberfläche plattformunabhängig über jeden modernen Webbrowser genutzt werden, ohne dass zusätzliche Software auf den Client-Geräten installiert werden muss.
 
@@ -283,7 +284,7 @@ Die Benutzeroberfläche des Chat-Systems wird ebenfalls als Webanwendung bereitg
 
 == Erstes Anschalten
 
-Zunächst musste das OS auf die M.2 SSD geschrieben werden, da der RP standardmäßig nicht über einen USB-Stick oder dergleichen booten kann. Das passierte mit dem Raspberry Pi Imager. Dieser kann eine Auswahl an vorgefertigten Betriebssystemen auf einen gewünschten Speicher schreiben. In unserem Fall die M.2 SSD. Nachdem die SSD mit Raspberry Pi OS beschrieben worden ist, konnte diese auf dem HAT montiert werden. Der HAT wurde anschließend auf dem RP verbaut und entsprechend angeschlossen.
+Zunächst musste das OS auf die M.2 SSD geschrieben werden, da der RP standardmäßig nicht über einen USB-Stick oder dergleichen booten kann. Das passierte mit dem Raspberry Pi Imager. Dieser kann eine Auswahl an vorgefertigten Betriebssystemen auf einen gewünschten Speicher schreiben – in unserem Fall auf die M.2 SSD. Nachdem die SSD mit Raspberry Pi OS beschrieben worden ist, konnte diese auf dem HAT montiert werden. Der HAT wurde anschließend auf dem RP verbaut und entsprechend angeschlossen.
 
 Nun gibt es aber das Problem, dass der RP immer noch nicht automatisch von der SSD booten kann, da dies eine neuere Firmwareversion erfordert und einige Kompatibilitätsprobleme aufgetreten sind. So haben wir nach dem Einbau einer SSD trotzdem zunächst von einer SD-Karte mit Raspberry Pi OS gebootet, um die Firmware mit dem mitgelieferten Tool `rpi-eeprom-update` zu upgraden.
 
@@ -306,7 +307,7 @@ Der Raspberry Pi fungiert als eigenständiger Access Point. Clients verbinden si
 ==== hostapd - WiFi Access Point
 Erstellt den WLAN-Hotspot auf dem `wlan0`-Interface:
 - SSID: PocketSurf
-- Sicherheit: WPA3
+- Sicherheit: WPA2-PSK
 - Kanal: 7 (2.4 GHz)
 
 ==== dnsmasq - DHCP und DNS Server
@@ -338,22 +339,67 @@ Routet eingehende HTTP/HTTPS-Anfragen zu den jeweiligen Backend-Services:
 
 == Service-Installation und -Konfiguration
 
-=== Implementierung
+=== Systemstruktur
 
-Alle Konfigurationsdateien der Server Implementierung:
-- `hostapd.conf` - WiFi-Hotspot-Konfiguration
-- `dnsmasq.conf` - DHCP- und DNS-Konfiguration
-- `Caddyfile` - Reverse-Proxy-Routing
-- `quadlets/` - Ordner mit Container Dateien für die Services
-- `install.sh` - Installations-Script
+Das System besteht aus zwei Schichten: Diensten, die direkt auf dem Betriebssystem laufen, und containerisierten Anwendungen.
 
-Die Installation des Systems erfolgt über das bereitgestellte Shell-Script, welches alle notwendigen Pakete installiert, Konfigurationen deployed und die Services aktiviert.
+*Host-Dienste* laufen direkt auf dem Betriebssystem, da sie privilegierten Zugriff auf die Netzwerkschnittstelle benötigen:
+- `hostapd` stellt den WLAN-Hotspot bereit
+- `dnsmasq` übernimmt DHCP-Adressvergabe und lokale DNS-Auflösung
+- Das Home Dashboard wird als nativer Systemdienst betrieben, damit es Konfigurationsdateien direkt bearbeiten und Host-Dienste über systemd neu starten kann
+
+*Containerisierte Dienste* laufen in einem gemeinsamen Podman-Pod mit Host-Netzwerkmodus. Im Host-Netzwerkmodus teilen alle Container den Netzwerk-Namespace des Hosts. Das bedeutet, dass alle Dienste über `localhost` miteinander und mit den Host-Diensten kommunizieren können, ohne gesondertes Port-Mapping. Caddy ist damit in der Lage, Anfragen an alle Backends – einschließlich des nativen Home Dashboards – über `localhost` weiterzuleiten.
+
+Die folgende Tabelle gibt einen Überblick über alle Dienste des Systems:
+
+#table(
+  columns: (auto, auto, 1fr),
+  stroke: (x, y) => if y == 0 { (bottom: 1pt) } else { none },
+  align: left,
+  [*Dienst*], [*Betrieb*], [*Beschreibung*],
+  [Home Dashboard], [Host (systemd)], [Verwaltungsoberfläche; gebaut aus Rust-Quellcode],
+  [Caddy], [Container], [Reverse Proxy; leitet Domains zu den jeweiligen Ports weiter],
+  [SFTPGo], [Container], [Dateiserver mit Web-Interface und SFTP-Zugang],
+  [Vikunja], [Container], [Aufgabenverwaltung mit integriertem Frontend],
+  [BookStack], [Container], [Wiki und Wissensdatenbank],
+  [MariaDB], [Container], [Datenbankserver für BookStack],
+  [Local Chat], [Container], [Echtzeit-Messaging; gebaut aus Python-Quellcode],
+)
+
+=== Konfigurationsdateien
+
+Alle Konfigurationsdateien werden während der Installation nach `/etc/pocket-surf/` kopiert:
+
+- `hostapd.conf` — WLAN-Hotspot-Parameter (SSID, Passwort, Kanal, Sicherheit)
+- `dnsmasq.conf` — DHCP-Bereich und DNS-Einträge für die `.local`-Domains
+- `Caddyfile` — Routing-Regeln des Reverse Proxys
+
+Das Home Dashboard liest und schreibt die Konfigurationsdateien direkt aus diesem Verzeichnis. Nach einer Änderung startet es die betroffenen Host-Dienste über systemd neu, damit die neuen Einstellungen wirksam werden.
+
+=== Container-Definitionen (Quadlets)
+
+Jeder containerisierte Dienst wird durch eine Quadlet-Datei beschrieben. Quadlets sind systemd-Unit-Dateien für Podman-Container: systemd liest die `.container`-Dateien aus `/etc/containers/systemd/` und verwaltet die Container wie reguläre Dienste – inklusive automatischem Neustart bei Fehlern und Aktivierung beim Systemstart.
+
+Abhängigkeiten zwischen Diensten werden über `After=` und `Requires=` in den Unit-Dateien abgebildet. BookStack zum Beispiel startet erst, nachdem die MariaDB-Datenbank bereit ist.
+
+=== Installationsablauf
+
+Die gesamte Installation erfolgt über das Skript `install.sh`. Es durchläuft folgende Schritte:
+
++ Systempakete installieren: `hostapd`, `dnsmasq` und `podman`
++ Statische IP-Adresse `192.168.4.1` für `wlan0` konfigurieren
++ Konfigurationsdateien nach `/etc/pocket-surf/` deployen; `hostapd` und `dnsmasq` werden so konfiguriert, dass sie ihre Konfiguration aus diesem Verzeichnis lesen
++ IP-Forwarding aktivieren
++ Home Dashboard aus dem Rust-Quellcode bauen (`cargo build --release`), das Binary nach `/usr/local/bin/` installieren und als systemd-Dienst einrichten
++ Host-Dienste (`hostapd`, `dnsmasq`, Home Dashboard) aktivieren und starten
++ Chat-Container aus dem Python-Quellcode bauen (`podman build`) und alle Quadlet-Dateien nach `/etc/containers/systemd/` kopieren
++ Pod und alle Container-Dienste über systemd starten
 
 #pagebreak()
 
 = Tests und Validierung
 
-Die Tests dienen dazu, die grundlegende Funktionsfähigkeit des Systems zu überprüfen und Validierung der wichtigsten Systemkomponenten und deren Zusammenspiel.
+Die Tests dienen dazu, die grundlegende Funktionsfähigkeit des Systems zu überprüfen sowie die wichtigsten Systemkomponenten und deren Zusammenspiel zu validieren.
 
 Da das System aus mehreren Diensten besteht, die über ein lokales Netzwerk bereitgestellt
 werden, ist insbesondere das Zusammenspiel von Netzwerk, Serverdiensten und
@@ -531,7 +577,6 @@ Die Aufgaben wurden gleichmäßig auf die drei Teammitglieder verteilt, wobei je
 - Code-Reviews und gegenseitige Unterstützung
 
 == Herausforderungen und Lösungen
-// TODO : Überprüfung der realen Herausforderung ; Wirklich real auftretende Probleme beschreiben; nicht halluzinieren;
 
 === SSD-Kompatibilitätsprobleme mit dem M.2 HAT
 
@@ -560,26 +605,35 @@ Eine der größten Herausforderungen während der Hardware-Konfiguration war die
 - Ausreichende Vorab-Recherche über Kompatibilität spart Zeit und Frustration
 - Ein Backup-Plan mit alternativen Hardware-Komponenten ist wichtig
 
-=== Netzwerk-Isolation und Container-Kommunikation
+=== Lieferkette und Hardwarepreise
 
 *Herausforderung:*
 
-Die Konfiguration der Podman-Container zur Kommunikation untereinander und gleichzeitig die korrekte Weiterleitung durch Caddy stellte eine technische Herausforderung dar.
+Die Beschaffung der benötigten Hardware gestaltete sich schwieriger als erwartet. Der Raspberry Pi 5 sowie passende M.2 HATs sind auf dem Markt zeitweise nur eingeschränkt verfügbar, was die Projektplanung beeinflusste. Darüber hinaus waren die Preise für die benötigten Komponenten vergleichsweise hoch, sodass das Budget sorgfältig eingeplant werden musste.
 
-*Lösung:*
+*Lösungsansatz:*
 
-Verwendung eines Podman-Pods mit gemeinsamem Netzwerk-Namespace. Dadurch können alle Container über `localhost` miteinander kommunizieren, während die Host-Netzwerk-Services (hostapd, dnsmasq) weiterhin funktionieren.
+Durch frühzeitige Recherche und das Vergleichen verschiedener Anbieter konnten die benötigten Komponenten rechtzeitig beschafft werden. Die Preisentwicklung wurde beobachtet und günstigere Bezugsquellen wurden genutzt, wo dies möglich war.
 
-=== WiFi-Hotspot-Stabilität
+*Erkenntnisse:*
+- Hardware-Projekte erfordern eine frühzeitige Beschaffungsplanung
+- Lieferzeiten und Verfügbarkeit können Projektpläne erheblich beeinflussen
+- Preisvergleiche und alternative Bezugsquellen sind wichtig, um das Budget einzuhalten
+
+=== Eingeschränkte Betriebssystemwahl
 
 *Herausforderung:*
 
+Die Wahl des Betriebssystems war durch Kompatibilitätsanforderungen eingeschränkt. Viele Dienste und Tools, die wir nutzen wollten, sind primär für x86_64-Architekturen ausgelegt und stehen auf ARM entweder nicht zur Verfügung oder müssen aufwändig angepasst werden. Alternativen wie Alpine Linux schieden aufgrund fehlender Raspberry Pi spezifischer Verwaltungs-Tools aus.
 
-Initialer Konfigurationsfehler bei hostapd führte zu instabilen WiFi-Verbindungen.
+*Lösungsansatz:*
 
-*Lösung:*
+Wir entschieden uns bewusst für Raspberry Pi OS als Betriebssystem, da es den besten Kompromiss aus Kompatibilität, verfügbaren Tools und offizieller Unterstützung für die eingesetzte Hardware bietet. Dienste, die nativ auf ARM verfügbar waren, wurden bevorzugt ausgewählt.
 
-Optimierung der Kanalauswahl (Kanal 7) und korrekte WPA2-Konfiguration. Sicherstellung, dass `wpa_supplicant` nicht mit `hostapd` interferiert durch explizites Deaktivieren in der `dhcpcd.conf`.
+*Erkenntnisse:*
+- Die Wahl der Hardware beeinflusst direkt die verfügbaren Software-Optionen
+- ARM-Kompatibilität muss bei der Service-Auswahl von Beginn an berücksichtigt werden
+- Offizielle und gut gepflegte Betriebssysteme bieten bei spezifischer Hardware klare Vorteile
 
 #pagebreak()
 
@@ -591,7 +645,9 @@ Das Projekt "Pocket Surf" demonstriert die Entwicklung eines mobilen Servers auf
 
 Die technische Umsetzung kombiniert moderne Container-Technologien (Podman) mit bewährten Netzwerk-Komponenten (hostapd, dnsmasq, Caddy). Das Home Dashboard ermöglicht die einfache Verwaltung des Systems ohne Terminal-Kenntnisse.
 
-// TODO: Persönliche Reflexion und Bewertung des Projekterfolgs hinzufügen
+Rückblickend betrachten wir das Projekt als Erfolg. Die gesteckten Ziele wurden erreicht: Das System ist betriebsfähig, alle wesentlichen Dienste stehen bereit und lassen sich ohne Internetverbindung nutzen. Besonders positiv war die Zusammenarbeit im Team, bei der jedes Mitglied seinen Schwerpunkt einbringen konnte und die einzelnen Komponenten sich gut zu einem Gesamtsystem zusammengefügt haben.
+
+Die größte persönliche Erkenntnis war, dass Hardwareprojekte deutlich mehr Planungsaufwand erfordern als reine Softwareprojekte. Lieferzeiten, Kompatibilitätsprobleme und Preiserwägungen sind Faktoren, die in der Praxis nicht unterschätzt werden dürfen. Gleichzeitig hat das Projekt gezeigt, dass mit vergleichsweise günstiger Hardware und frei verfügbarer Open-Source-Software eine funktionsfähige und praxistaugliche Serverlösung realisiert werden kann.
 
 == Lessons Learned
 
@@ -626,7 +682,7 @@ Ein Mini-PC mit x86_64-Architektur, mindestens 16 GB RAM, und einer NVMe-SSD wä
 
 === Dokumentation ist essentiell
 
-Die ausführliche Dokumentation aller Konfigurationsschritte hat sich als äußerst wertvoll erwiesen:
+Die ausführliche Dokumentation aller Konfigurationsschritte hat sich als wertvoll erwiesen:
 - Reproduzierbarkeit der Installation
 - Fehlersuche vereinfacht
 - Wissensvermittlung im Team
@@ -661,12 +717,6 @@ Die SSD-Kompatibilitätsprobleme haben gezeigt, dass auch bei standardisierten S
 
 == Anhang A: Quellcode-Auszüge
 
-// TODO : Code-Snippets hier einfügen
-
 == Anhang B: Konfigurationsdateien
 
-// TODO : Konfigurationsdateien hier dokumentieren
-
 == Anhang C: Zusätzliche Dokumentation
-
-// TODO : Zusätzliche Dokumentation hier einfügen

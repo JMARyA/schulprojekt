@@ -7,13 +7,8 @@ Requires=pocket-surf-bookstack-db.container.service pocket-surf.pod.service
 Image=lscr.io/linuxserver/bookstack:latest
 Pod=pocket-surf.pod
 
-# Port
-PublishPort=6875:80
-
-# Volumes
 Volume=bookstack-config:/config:Z
 
-# Environment
 Environment=PUID=1000
 Environment=PGID=1000
 Environment=APP_URL=http://wiki.local
@@ -23,11 +18,9 @@ Environment=DB_USER=bookstack
 Environment=DB_PASS=bookstack
 Environment=DB_DATABASE=bookstackapp
 
-# Auto-restart
 Restart=always
 RestartSec=10s
 
-# Health check
 HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
 HealthInterval=30s
 HealthRetries=3

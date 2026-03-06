@@ -1,25 +1,23 @@
 [Unit]
-Description=Pocket Surf Local Chat (Placeholder)
+Description=Pocket Surf Local Chat
 After=pocket-surf.pod.service
 Requires=pocket-surf.pod.service
 
 [Container]
-Image=docker.io/library/alpine:latest
+Image=localhost/pocket-surf-chat:latest
 Pod=pocket-surf.pod
 
-# Port
-PublishPort=8000:8000
-
-# Command
-Exec=sh -c "echo 'Chat service - to be implemented' && sleep infinity"
-
-# Auto-restart
 Restart=always
 RestartSec=10s
 
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:8000/ || exit 1
+HealthInterval=30s
+HealthRetries=3
+HealthStartPeriod=15s
+
 [Service]
 Restart=always
-TimeoutStartSec=900
+TimeoutStartSec=300
 
 [Install]
 WantedBy=multi-user.target default.target
