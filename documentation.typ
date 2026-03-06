@@ -91,13 +91,6 @@
 
 #pagebreak()
 
-#counter(page).update(1)
-
-#set page(
-  numbering: "1",
-  number-align: center,
-)
-
 = Abkürzungsverzeichnis
 
 #table(
@@ -114,6 +107,13 @@
 )
 
 #pagebreak()
+
+#counter(page).update(1)
+
+#set page(
+  numbering: "1",
+  number-align: center,
+)
 
 = Zweck und Zielsetzung des Dokuments
 
@@ -353,45 +353,111 @@ Die Installation des Systems erfolgt über das bereitgestellte Shell-Script, wel
 
 = Tests und Validierung
 
+Die Tests dienen dazu, die grundlegende Funktionsfähigkeit des Systems zu überprüfen und Validierung der wichtigsten Systemkomponenten und deren Zusammenspiel.
+
+Da das System aus mehreren Diensten besteht, die über ein lokales Netzwerk bereitgestellt
+werden, ist insbesondere das Zusammenspiel von Netzwerk, Serverdiensten und
+Clientgeräten relevant. Ziel der Tests war es daher zu prüfen, ob Benutzer sich mit dem
+System verbinden und die bereitgestellten Anwendungen wie vorgesehen nutzen können.
+
 == Testumgebung
 
-Die Tests wurden auf dem Raspberry Pi 5 selbst sowie auf verschiedenen Client-Geräten durchgeführt:
-- Smartphones (Android und iOS)
-- Laptops (Windows, macOS, Linux)
-- Tablets
+Für die Verbindung der Benutzergeräte stellt das System ein eigenes WLAN bereit.
+Clientgeräte können sich mit diesem Netzwerk verbinden und anschließend auf die lokal
+gehosteten Dienste zugreifen.
 
-Die Testumgebung simulierte einen typischen Anwendungsfall mit mehreren gleichzeitigen Benutzern, die auf verschiedene Services zugreifen.
+Zur Überprüfung der Nutzbarkeit wurden verschiedene Arten von Clientgeräten verwendet.
+Dazu gehören Smartphones und Laptops. Diese Geräte unterscheiden sich in Betriebssystem, Bildschirmgröße und Browserumgebung, wodurch sich prüfen lässt, ob die
+bereitgestellten Weboberflächen grundsätzlich auf unterschiedlichen Plattformen verwendbar sind.
 
-== Testfälle
+Die Geräte wurden jeweils mit dem WLAN des Systems verbunden und anschließend über
+einen Webbrowser verwendet. Dabei wurde überprüft, ob die bereitgestellten Dienste über
+die vorgesehenen lokalen Adressen erreichbar sind und korrekt geladen werden.
 
-Die folgenden Bereiche wurden getestet:
+== Testdurchführung
 
-*Netzwerk und Konnektivität:*
-- WiFi-Verbindung zum Hotspot
-- DHCP-IP-Vergabe
-- DNS-Auflösung der `.local`-Domains
-- Stabilität bei mehreren Clients
+Im Rahmen der Tests wurden grundlegende Funktionsprüfungen durchgeführt. Diese
+sogenannten Smoke Tests dienen dazu festzustellen, ob die wichtigsten Komponenten eines
+Systems grundsätzlich funktionieren und miteinander interagieren können.
 
-*Services:*
-- Erreichbarkeit aller Web-Interfaces
-- Funktionalität des Home Dashboards
-- Datei-Upload/-Download über SFTPGo
-- Task-Verwaltung in Vikunja
-- Wiki-Funktionen in BookStack
+Die Tests konzentrieren sich dabei auf drei zentrale Bereiche: Netzwerk, Dienste und
+allgemeine Systemnutzung.
 
-*Performance:*
-- Ladezeiten der Webseiten
-- Gleichzeitige Nutzung durch mehrere Benutzer
-- Systemressourcen unter Last
+=== Netzwerk und Konnektivität
 
-== Ergebnisse
+Da sämtliche Anwendungen über ein lokales Netzwerk bereitgestellt werden, bildet die
+Netzwerkinfrastruktur die Grundlage für die Nutzung des Systems. Entsprechend wurde
+zunächst überprüft, ob Clients sich erfolgreich mit dem WLAN des RP verbinden
+können.
 
-Die Tests verliefen überwiegend erfolgreich:
-- Alle Services sind über die konfigurierten Domains erreichbar
-- WiFi-Verbindung stabil bei bis zu 5 gleichzeitigen Clients
-- Ladezeiten der Anwendungen im akzeptablen Bereich (1-3 Sekunden)
-- Home Dashboard ermöglicht einfache Verwaltung der WiFi-Einstellungen
-- Offline-Betrieb funktioniert vollständig ohne Internet-Verbindung
+Nach erfolgreicher Verbindung wurde kontrolliert, ob die angeschlossenen Geräte eine
+gültige IP-Adresse erhalten. Dies geschieht automatisch über einen DHCP-Dienst, der
+Teil der Netzwerkkonfiguration des Systems ist. Die korrekte Vergabe von IP-Adressen
+ist notwendig, damit Clients innerhalb des lokalen Netzwerks kommunizieren können.
+
+Zusätzlich wurde überprüft, ob die bereitgestellten Dienste über die konfigurierten
+lokalen Domains erreichbar sind und das lokale DNS funktioniert. Diese Domains ermöglichen es, die verschiedenen
+Webanwendungen über leicht merkbare Adressen aufzurufen, anstatt direkt mit
+IP-Adressen zu arbeiten.
+
+Ein weiterer Aspekt der Tests bestand darin, mehrere Geräte gleichzeitig mit dem
+Netzwerk zu verbinden. Dadurch konnte überprüft werden, ob grundlegende Mehrbenutzer-
+Szenarien funktionieren und die Clients weiterhin auf die bereitgestellten Dienste
+zugreifen können.
+
+=== Überprüfung der Dienste
+
+Neben der Netzwerkkonnektivität wurde überprüft, ob die einzelnen Serverdienste korrekt
+starten und erreichbar sind. Das System stellt mehrere Webanwendungen bereit, die über
+einen Browser genutzt werden können.
+
+Ein zentraler Bestandteil ist das Home Dashboard, das als Einstiegspunkt für die
+verschiedenen Dienste dient. Während der Tests wurde überprüft, ob dieses Dashboard
+geladen werden kann und die dort hinterlegten Verweise zu den einzelnen Anwendungen
+funktionieren.
+
+Darüber hinaus wurden grundlegende Funktionen einzelner Dienste überprüft. Dazu gehört
+beispielsweise der Zugriff auf die Benutzeroberflächen der Anwendungen sowie einfache
+Interaktionen innerhalb dieser Systeme. Beispiele hierfür sind das Öffnen von
+Seiten innerhalb eines Wikis, das Anzeigen von Aufgabenlisten oder der Zugriff auf
+Dateibereiche.
+
+Der Zweck dieser Tests war nicht eine vollständige Funktionsprüfung der einzelnen
+Anwendungen durchzuführen, sondern sicherzustellen, dass diese korrekt gestartet
+werden und grundsätzlich nutzbar sind (Smoke Test/Integration Tests).
+
+=== Allgemeine Nutzung
+
+Ein weiterer Fokus lag auf der praktischen Nutzung des Systems aus Sicht eines
+Benutzers. Nachdem ein Clientgerät mit dem Netzwerk verbunden wurde, wurde der
+typische Ablauf der Nutzung durchgespielt.
+
+Dabei verbindet sich ein Benutzer zunächst mit dem WLAN des Systems und ruft
+anschließend über den Webbrowser das Home Dashboard auf. Von dort aus können die
+verschiedenen Dienste geöffnet werden.
+
+Dieser Ablauf wurde mit unterschiedlichen Geräten wiederholt, um zu überprüfen, ob
+der Zugriff unabhängig vom verwendeten Gerät grundsätzlich möglich ist. Da sämtliche
+Anwendungen webbasiert sind, erfolgt die Nutzung ausschließlich über einen Browser,
+wodurch keine zusätzliche Software auf den Clients installiert werden muss.
+
+== Ergebnis
+
+Die durchgeführten Tests zeigen, dass die grundlegenden Funktionen des Systems
+bereitgestellt werden können. Clientgeräte konnten sich erfolgreich mit dem WLAN
+verbinden und erhielten eine gültige Netzwerkadresse.
+
+Die verschiedenen Webdienste konnten über ihre vorgesehenen lokalen Adressen
+aufgerufen werden. Auch das Home Dashboard war erreichbar und konnte als zentraler
+Zugangspunkt zu den einzelnen Anwendungen genutzt werden.
+
+Die Nutzung des Systems ist damit grundsätzlich möglich, ohne dass eine Verbindung
+zum Internet erforderlich ist. Alle notwendigen Dienste werden lokal auf dem
+Raspberry Pi ausgeführt und stehen den verbundenen Clients innerhalb des lokalen
+Netzwerks zur Verfügung.
+
+Die Tests bestätigen damit, dass das System in seiner vorgesehenen Grundfunktion
+betriebsfähig ist und die wichtigsten Komponenten miteinander zusammenarbeiten.
 
 #pagebreak()
 
@@ -465,6 +531,7 @@ Die Aufgaben wurden gleichmäßig auf die drei Teammitglieder verteilt, wobei je
 - Code-Reviews und gegenseitige Unterstützung
 
 == Herausforderungen und Lösungen
+// TODO : Überprüfung der realen Herausforderung ; Wirklich real auftretende Probleme beschreiben; nicht halluzinieren;
 
 === SSD-Kompatibilitätsprobleme mit dem M.2 HAT
 
@@ -507,7 +574,6 @@ Verwendung eines Podman-Pods mit gemeinsamem Netzwerk-Namespace. Dadurch können
 
 *Herausforderung:*
 
-// TODO : Überprüfung der realen Herausforderung
 
 Initialer Konfigurationsfehler bei hostapd führte zu instabilen WiFi-Verbindungen.
 
@@ -528,8 +594,6 @@ Die technische Umsetzung kombiniert moderne Container-Technologien (Podman) mit 
 // TODO: Persönliche Reflexion und Bewertung des Projekterfolgs hinzufügen
 
 == Lessons Learned
-
-// TODO : Echte Lessons Learned, überprüfen
 
 === Hardware-Limitierungen
 
