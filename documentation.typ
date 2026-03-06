@@ -6,7 +6,12 @@
 
 #set page(
   paper: "a4",
-  margin: (x: 2.5cm, y: 2.5cm),
+  margin: (
+    top: 2cm,
+    bottom: 2cm,
+    left: 2cm,
+    right: 3cm,
+  ),
   numbering: "1",
   header: context {
     if counter(page).get().first() > 1 [
@@ -20,16 +25,21 @@
 
 #set text(
   font: "Arial",
-  size: 11pt,
+  size: 12pt,
   lang: "de",
 )
 
-#set heading(numbering: "1.1")
 
 #set par(
   justify: true,
-  leading: 0.65em,
+  leading: 0.9em, // approx 1.5 spacing
 )
+
+#set heading(
+  numbering: "1.",
+)
+
+#set page(numbering: none)
 
 // Title Page
 #align(center)[
@@ -81,6 +91,13 @@
 
 #pagebreak()
 
+#counter(page).update(1)
+
+#set page(
+  numbering: "1",
+  number-align: center,
+)
+
 = Abkürzungsverzeichnis
 
 #table(
@@ -100,29 +117,31 @@
 
 = Zweck und Zielsetzung des Dokuments
 
-Ziel dieses Dokuments ist es, die genaue Vorgehensweise der folgenden Phasen des Projekts zu erläutern. Um die Entwicklung strukturiert zu gestalten, haben wir uns hier das Wasserfallmodell zur Hand genommen. Dieses sieht wie folgt aus:
+Ziel dieses Dokuments ist es, die genaue Vorgehensweise der folgenden Phasen des Projekts zu erläutern. Um die Entwicklung strukturiert zu gestalten, haben wir uns für das Wasserfallmodell entschieden, welches eine sequenzielle Projektdurchführung ermöglicht und klare Phasengrenzen definiert.
 
 == Requirements and Analysis
-- Sammeln und Dokumentieren aller Anforderungen an das System.
-- Ziel: Ein vollständiges Verständnis dessen, was das System tun soll.
+
+In dieser ersten Phase werden alle Anforderungen an das System gesammelt und dokumentiert. Das Ziel ist ein vollständiges Verständnis dessen, was das System leisten soll und welche Funktionen für den mobilen Servereinsatz erforderlich sind.
 
 == System Design
-- Entwurf der Architektur und der Komponenten des Systems.
-- Entscheidungen über Programmiersprachen, des Betriebssystems usw.
+
+Basierend auf den gesammelten Anforderungen erfolgt der Entwurf der Systemarchitektur und der einzelnen Komponenten. In dieser Phase werden grundlegende Entscheidungen über die einzusetzenden Programmiersprachen, das Betriebssystem und die Netzwerkkonfiguration getroffen.
 
 == Implementation
-- Programmieren der Software gemäß dem Design.
-- Jede Komponente wird entwickelt und integriert.
+
+In der Implementierungsphase wird die Software gemäß dem zuvor erstellten Design programmiert. Jede Komponente wird einzeln entwickelt und anschließend in das Gesamtsystem integriert.
 
 == Testing
-- Zusammensetzen aller Module und Testen des Gesamtsystems.
-- Ziel: Fehler erkennen und beheben.
+
+Nach der Implementierung werden alle Module zusammengesetzt und das Gesamtsystem umfassend getestet. Ziel dieser Phase ist es, Fehler zu erkennen und zu beheben, bevor das System in Betrieb genommen wird.
 
 == Installation
-- Software wird in der Zielumgebung installiert und produktiv eingesetzt.
+
+Die Software wird in der Zielumgebung installiert und produktiv eingesetzt. Alle Dienste werden konfiguriert und auf ihre Funktionsfähigkeit überprüft.
 
 == Maintenance
-- Beheben von Fehlern, Updates, Anpassungen.
+
+Die letzte Phase umfasst die kontinuierliche Wartung des Systems, einschließlich der Behebung von Fehlern, der Durchführung von Updates und der Anpassung an neue Anforderungen.
 
 #v(1em)
 
@@ -236,6 +255,29 @@ Zentraler Reverse Proxy und Webserver:
 - Vereinfacht Zugriff: Keine IP-Adressen und Port-Nummern mehr notwendig
 
 #pagebreak()
+
+=== Technische Grundlagen der Anwendungen
+Die Anwendungen des Systems werden containerisiert betrieben. Durch den Einsatz von Containern wird eine klare Isolation zwischen den einzelnen Diensten erreicht. Dies erhöht sowohl die Sicherheit als auch die Wartbarkeit des Systems, da jede Anwendung in einer eigenen, voneinander unabhängigen Umgebung ausgeführt wird.
+
+Ein weiterer Vorteil dieser Architektur besteht darin, dass jede Anwendung ihre eigenen Abhängigkeiten und Laufzeitumgebungen mitbringen kann, ohne Konflikte mit anderen Diensten zu verursachen. Updates oder Änderungen an einem Dienst können somit durchgeführt werden, ohne den Betrieb der übrigen Anwendungen zu beeinträchtigen. Ein weiterer Vorteil, der sich dadurch ergibt, ist das jeder Entwickler mit der Sprache und den Tools arbeiten kann, die er am besten beherrscht. Die Technologien können bei containerisierten Anwendungen frei gewählt und über HTTP kann mit jeder Anwendung standardisiert interagiert werden.
+
+==== Home App
+
+Die Home App stellt die zentrale Verwaltungsoberfläche des Systems dar und dient als Einstiegspunkt für die Benutzer. Sie fungiert als Dashboard, über das alle verfügbaren Dienste erreicht und grundlegende Systemeinstellungen verwaltet werden können.
+
+Die Anwendung wurde in der Programmiersprache Rust implementiert. Rust bietet eine hohe Geschwindigkeit, bietet sicheres Speichermanagement und ist als Systemsprache extrem resourcenschonend . Dadurch eignet sich die Sprache besonders gut für Systeme mit begrenzten Ressourcen wie den Raspberry Pi.
+
+Die Home App ist eng mit dem zugrunde liegenden System integriert und übernimmt unter anderem administrative Aufgaben wie die Verwaltung des WLAN-Hotspots sowie grundlegende Geräteadministration. Die Benutzeroberfläche wird als Webanwendung bereitgestellt und besteht aus klassischen Webtechnologien wie HTML und CSS. Dadurch kann die Oberfläche plattformunabhängig über jeden modernen Webbrowser genutzt werden, ohne dass zusätzliche Software auf den Client-Geräten installiert werden muss.
+
+==== Local Chat
+
+Der Messaging-Dienst „Local Chat“ ermöglicht eine direkte Kommunikation zwischen den im lokalen Netzwerk verbundenen Geräten. Da der Dienst vollständig lokal betrieben wird, funktioniert die Kommunikation auch ohne Internetverbindung und eignet sich daher besonders für mobile Events.
+
+Die Anwendung wurde in Python unter Verwendung des Webframeworks Flask entwickelt. Flask ist ein leichtgewichtiges Framework, das sich besonders für kleinere Webanwendungen und APIs eignet. Durch seine modulare Struktur ermöglicht es eine übersichtliche Implementierung der notwendigen Serverlogik.
+
+Für die Echtzeitkommunikation zwischen den Clients wird eine persistent gehaltene Verbindung zum Server verwendet, wodurch Nachrichten unmittelbar an alle Teilnehmer verteilt werden können. Neben einfachen Textnachrichten unterstützt der Dienst auch Gruppenchats sowie den Austausch von Dateien zwischen den Nutzern.
+
+Die Benutzeroberfläche des Chat-Systems wird ebenfalls als Webanwendung bereitgestellt und kann über den Browser aufgerufen werden. Dadurch ist keine separate Installation auf den Endgeräten erforderlich, was die Nutzung insbesondere in heterogenen Umgebungen mit verschiedenen Betriebssystemen vereinfacht.
 
 = Projektdurchführung
 
@@ -502,13 +544,12 @@ Der Raspberry Pi 5 mit 8 GB RAM hat sich als ausreichend für einen Proof-of-Con
 
 - *Leistung:* Der ARM-Prozessor des Raspberry Pi stößt bei mehreren Container-Services an seine Grenzen
   - Längere Build-Zeiten
-  - Geringere Performance bei Datenbank-Operationen
   - Eingeschränkte Skalierbarkeit
 
 - *Zuverlässigkeit:* Enterprise-Hardware bietet bessere Zuverlässigkeit und Support
   - ECC-RAM für Datensicherheit
   - Redundante Speicher-Optionen
-  - Professioneller Hardware-Support
+  - Erstklassiger Hardware-Support
 
 *Empfehlung für Produktivbetrieb:*
 
@@ -516,6 +557,7 @@ Ein Mini-PC mit x86_64-Architektur, mindestens 16 GB RAM, und einer NVMe-SSD wä
 - Prototyping und Proof-of-Concept
 - Persönliche/Hobby-Projekte
 - Lernumgebungen
+- Günstige Beschaffung
 - Geringe Nutzerlast (1-3 Benutzer)
 
 === Dokumentation ist essentiell
@@ -529,18 +571,17 @@ Die ausführliche Dokumentation aller Konfigurationsschritte hat sich als äuße
 === Container-Orchestrierung vereinfacht Deployment
 
 Die Verwendung von Podman mit systemd-Quadlets hat mehrere Vorteile gebracht:
-- Einfaches Service-Management
+- Einfaches Service-Management über systemd wie klassische Linux Services
 - Automatische Neustarts bei Fehlern
-- Klare Trennung der Services
+- Klare Trennung der Services (Isolation)
 - Vereinfachte Updates einzelner Komponenten
 
 === Offline-First Design erfordert Planung
 
 Die Anforderung, dass alle Services offline funktionieren müssen, erforderte bewusste Technologie-Entscheidungen:
-- Verwendung von SQLite statt externen Datenbanken
-- Keine Abhängigkeiten von CDNs
-- Lokale Authentifizierung
-- Eingebettete Assets
+- Speicherung von Daten in lokalen Datenbank wie SQLite oder direkt auf dem Client Gerät.
+- Keine Abhängigkeiten von CDNs für Skripte, CSS oder andere Assets
+- Lokale Authentifizierung (kein SSO über Identity Anbieter wie Azure)
 
 === Hardware-Kompatibilität prüfen
 
@@ -548,7 +589,7 @@ Die SSD-Kompatibilitätsprobleme haben gezeigt, dass auch bei standardisierten S
 - Community-Feedback überprüft werden
 - Kompatibilitätslisten konsultiert werden
 - Testphasen eingeplant werden
-- Backup-Optionen vorgehalten werden
+- Alternativ-Optionen offen gehalten werden
 
 #pagebreak()
 
