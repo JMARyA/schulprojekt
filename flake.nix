@@ -11,7 +11,7 @@
 
   outputs = { self, nixpkgs, mdq }:
     let
-      system = "x86_64-linux";
+      system = "aarch64-darwin";
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     in
     {
@@ -21,7 +21,7 @@
           pkgs.unzip
           pkgs.typst
           pkgs.just
-          mdq.packages.${system}.default
+#          mdq.packages.${system}.default
         ];
 
         TYPST_FONT_PATHS = builtins.concatStringsSep ":" [
