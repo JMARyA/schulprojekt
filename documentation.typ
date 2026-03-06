@@ -98,13 +98,28 @@
   columns: (auto, 1fr),
   stroke: none,
   align: left,
-  [*MS*], [Mobiler Server],
-  [*OS*], [Operating System],
+  [*ARM*], [Advanced RISC Machine (Prozessorarchitektur)],
+  [*CDN*], [Content Delivery Network],
+  [*CPU*], [Central Processing Unit],
+  [*DHCP*], [Dynamic Host Configuration Protocol],
+  [*DNS*], [Domain Name System],
+  [*ECC*], [Error-Correcting Code],
   [*FOSS*], [Free Open-Source Software],
-  [*RAM*], [Random Access Memory],
-  [*SSD*], [Solid State Drive],
-  [*RP*], [Raspberry Pi],
   [*HAT*], [Hardware Attached on Top],
+  [*HTTP*], [Hypertext Transfer Protocol],
+  [*HTTPS*], [Hypertext Transfer Protocol Secure],
+  [*IP*], [Internet Protocol],
+  [*NVMe*], [Non-Volatile Memory Express],
+  [*OS*], [Operating System],
+  [*RAM*], [Random Access Memory],
+  [*RP*], [Raspberry Pi],
+  [*SFTP*], [SSH File Transfer Protocol],
+  [*SSH*], [Secure Shell],
+  [*SSD*], [Solid State Drive],
+  [*SSID*], [Service Set Identifier],
+  [*WLAN*], [Wireless Local Area Network],
+  [*WPA2*], [Wi-Fi Protected Access 2],
+  [*WYSIWYG*], [What You See Is What You Get],
 )
 
 #pagebreak()
@@ -120,27 +135,27 @@
 
 Ziel dieses Dokuments ist es, die genaue Vorgehensweise der folgenden Phasen des Projekts zu erläutern. Um die Entwicklung strukturiert zu gestalten, haben wir uns für das Wasserfallmodell entschieden, welches eine sequenzielle Projektdurchführung ermöglicht und klare Phasengrenzen definiert.
 
-== Requirements and Analysis
+== Anforderungsanalyse
 
 In dieser ersten Phase werden alle Anforderungen an das System gesammelt und dokumentiert. Das Ziel ist ein vollständiges Verständnis dessen, was das System leisten soll und welche Funktionen für den mobilen Servereinsatz erforderlich sind.
 
-== System Design
+== Systementwurf
 
 Basierend auf den gesammelten Anforderungen erfolgt der Entwurf der Systemarchitektur und der einzelnen Komponenten. In dieser Phase werden grundlegende Entscheidungen über die einzusetzenden Programmiersprachen, das Betriebssystem und die Netzwerkkonfiguration getroffen.
 
-== Implementation
+== Implementierung
 
 In der Implementierungsphase wird die Software gemäß dem zuvor erstellten Design programmiert. Jede Komponente wird einzeln entwickelt und anschließend in das Gesamtsystem integriert.
 
-== Testing
+== Testen
 
 Nach der Implementierung werden alle Module zusammengesetzt und das Gesamtsystem umfassend getestet. Ziel dieser Phase ist es, Fehler zu erkennen und zu beheben, bevor das System in Betrieb genommen wird.
 
-== Installation
+== Inbetriebnahme
 
-Die Software wird in der Zielumgebung installiert und produktiv eingesetzt. Alle Dienste werden konfiguriert und auf ihre Funktionsfähigkeit überprüft.
+Die Software wird in der Zielumgebung installiert und in Betrieb genommen. Alle Dienste werden konfiguriert und auf ihre Funktionsfähigkeit überprüft.
 
-== Maintenance
+== Wartung
 
 Die letzte Phase umfasst die kontinuierliche Wartung des Systems, einschließlich der Behebung von Fehlern, der Durchführung von Updates und der Anpassung an neue Anforderungen.
 
@@ -163,6 +178,8 @@ Im Rahmen dieses Projekts wurde ein mobiler Server auf Basis eines Raspberry Pi 
 
 Da es sich hierbei um gängige Hard- und Software handelt, hat man hier die Möglichkeit, eine sehr hohe Bandbreite an frei verfügbarer Open-Source-Software (FOSS) zu installieren und zu konfigurieren. Somit sind die Einsatzmöglichkeiten eines solchen Systems nahezu unbegrenzt.
 
+Typische Einsatzbereiche für einen mobilen Server dieser Art sind Veranstaltungen und Messen, auf denen kurzfristig eine gemeinsame Infrastruktur benötigt wird, Baustellen und Außenstandorte ohne feste Netzwerkanbindung sowie Workshops und Schulungen, bei denen eine kollaborative Arbeitsumgebung ohne aufwändige Vorbereitung bereitgestellt werden soll.
+
 Im Verlauf der Projektdokumentation werden zunächst die technischen Grundlagen erläutert, anschließend die Planung und Umsetzung beschrieben sowie die Konfiguration der eingesetzten Dienste dokumentiert. Abschließend erfolgt eine Bewertung des Projektergebnisses hinsichtlich Funktionalität, Sicherheit und Erweiterbarkeit.
 
 #pagebreak()
@@ -173,7 +190,7 @@ Im Verlauf der Projektdokumentation werden zunächst die technischen Grundlagen 
 
 Als physisches Host-Gerät wurde der Raspberry Pi 5 mit 8 GB RAM gewählt. Der Raspberry Pi 5 ist ein leistungsfähiger Einplatinencomputer (Single Board-Computer), der sich insbesondere für IT- und Embedded-Projekte eignet. Die eingesetzte ARM-CPU zeichnet sich durch hohe Energieeffizienz aus, was den Betrieb in mobilen Anwendungen begünstigt. Mit 8 GB RAM verfügt das System über mehr als ausreichend Arbeitsspeicher, um ein Headless-Setup auch mit vielen Services zuverlässig und performant zu betreiben.
 
-Für die mobile Stromversorgung haben wir uns für eine handelsübliche Powerbank entschieden, da diese kostengünstig, kompakt und für mehrere Stunden Betrieb ausreichend sind. Zu beachten ist nur, dass die Powerbank mindestens 15W an Leistung konstant abgeben kann. Das ist wichtig, um einen reibungslosen Betrieb des RP zu gewährleisten.
+Für die mobile Stromversorgung haben wir uns für eine handelsübliche Powerbank entschieden, da diese kostengünstig, kompakt und für mehrere Stunden Betrieb ausreichend ist. Zu beachten ist nur, dass die Powerbank mindestens 15W an Leistung konstant abgeben kann. Das ist wichtig, um einen reibungslosen Betrieb des RP zu gewährleisten.
 
 Als nichtflüchtigen Speicher wählten wir eine M.2 SSD mit einem RP HAT, der auf dem RP befestigt ist und fest verbunden wird, da diese deutlich leistungsfähiger und langlebiger als die gängigen SD-Karten sind. Das steigert die allgemeine Verlässlichkeit und das Abspeichern von Daten auf dem RP läuft deutlich schneller.
 
@@ -198,69 +215,49 @@ Für das Betriebssystem haben wir uns bewusst für Raspberry Pi OS entschieden, 
 
 == Software
 
-=== Geplante Dienste
+=== Dienste
 
-Der Software-Stack konzentriert sich auf essenzielle Business-Funktionen, die auch ohne Internet-Anbindung vollständig nutzbar sind. Alle Dienste sind ressourcenschonend und für den mobilen Betrieb optimiert.
+Der Software-Stack konzentriert sich auf essenzielle Geschäftsfunktionen, die auch ohne Internetanbindung vollständig nutzbar sind. Alle Dienste sind ressourcenschonend und für den mobilen Betrieb optimiert.
 
 ==== Home App
-Zentrale Verwaltungsoberfläche:
-- Übersicht über alle installierten Services / Home Menu
-- WLAN-Hotspot-Verwaltung
-- Geräte Administration
 
-==== SFTPGo (File Server)
-Dateiablage und -austausch:
-- Zentrale Ablage für Dokumente und Backups
-- Web-Interface für Dateimanagement
-- WebDAV-Zugriff für Desktop/Mobile
-- Datenaustausch zwischen Geräten / Sharing
+Die Home App ist die zentrale Verwaltungsoberfläche des Systems. Sie stellt ein Home-Menü mit Übersicht über alle installierten Dienste bereit, ermöglicht die Verwaltung des WLAN-Hotspots und übernimmt grundlegende Geräteadministration.
 
-==== Vikunja (Task Management)
-Projektmanagement und Aufgabenverwaltung:
-- Kanban-Boards und Listen
-- Zeiterfassung und Deadlines
-- Team-Koordination
-- Funktioniert vollständig offline und eigenständig
+==== SFTPGo (Dateiserver)
+
+SFTPGo dient als zentraler Dateiserver für Dateiablage und -austausch. Er bietet eine Web-Oberfläche für das Dateimanagement, WebDAV-Zugriff für Desktop- und Mobilgeräte sowie die Möglichkeit, Dateien zwischen Geräten zu teilen. Für Unternehmen eignet er sich als zentrale Ablage für Dokumente und Backups.
+
+==== Vikunja (Aufgabenverwaltung)
+
+Vikunja ist eine Projektmanagement- und Aufgabenverwaltungsanwendung. Sie unterstützt Kanban-Boards, Listen, Zeiterfassung und Deadlines und ist für die Team-Koordination ausgelegt. Die Anwendung funktioniert vollständig offline und ohne externe Abhängigkeiten.
 
 ==== Local Chat (Messaging)
-Messaging-Dienst für lokale Kommunikation:
-- Echtzeit-Chat
-- Team-Kommunikation ohne Internet
-- Dateifreigabe möglich
-- Gruppenchats
 
-==== BookStack (Knowledge Base)
-Wissens- und Dokumentationsdatenbank:
-- Strukturierte Dokumentation von Prozessen und Wissen
-- Markdown-Editor mit WYSIWYG-Option
-- Suchfunktion über alle Dokumente
-- Versionierung von Änderungen
-- Wichtig für Business: Prozessdokumentation, Wissensmanagement, Anleitungen
+Local Chat ist ein Messaging-Dienst für die lokale Kommunikation im Team. Er ermöglicht Echtzeit-Chat und Team-Kommunikation ohne Internetanbindung, unterstützt Gruppenchats und bietet die Möglichkeit zur Dateifreigabe zwischen den Teilnehmern.
+
+==== BookStack (Wissensdatenbank)
+
+BookStack ist eine Wissens- und Dokumentationsdatenbank, die auf strukturierte Dokumentation von Prozessen und Wissen ausgelegt ist. Sie bietet einen Markdown-Editor mit WYSIWYG-Option, eine Suchfunktion über alle Dokumente sowie Versionierung von Änderungen. Für Unternehmen ist sie besonders geeignet für Prozessdokumentation, Wissensmanagement und das Erstellen von Anleitungen.
 
 === Systemdienste
 
 ==== Dnsmasq (DNS/DHCP)
-Netzwerk-Infrastruktur für das lokale Netz:
-- DHCP-Server für automatische IP-Vergabe
-- DNS-Server für lokale Namensauflösung
-- Ermöglicht Betrieb als eigenständiger WLAN-Hotspot
-- Interne DNS-Umschreibung für Service-Namen (z.B. `files.local`)
+
+Dnsmasq übernimmt zwei zentrale Aufgaben im lokalen Netz. Als DHCP-Server vergibt es den verbundenen Clients automatisch IP-Adressen und ermöglicht so den eigenständigen Betrieb als WLAN-Hotspot. Als DNS-Server löst es die konfigurierten `.local`-Domains auf die IP-Adresse des Servers auf, sodass alle Dienste über sprechende Namen erreichbar sind.
 
 ==== Caddy (Reverse Proxy)
-Zentraler Reverse Proxy und Webserver:
-- Einheitlicher Einstiegspunkt für alle Dienste
-- Automatisches Routing zu verschiedenen Anwendungen via DNS-Namen
-- HTTPS-Unterstützung mit selbstsignierten Zertifikaten
-- Koordiniert alle Web-Dienste über Port 80/443
-- Benutzerfreundliche URLs: `home.local`, `files.local`, `tasks.local`, `wiki.local`, etc.
-- Vereinfacht Zugriff: Keine IP-Adressen und Port-Nummern mehr notwendig
+
+Caddy fungiert als zentraler Reverse Proxy und bildet den einheitlichen Zugangspunkt für alle Web-Dienste. Eingehende Anfragen werden anhand des Domain-Namens an den jeweiligen Backend-Dienst weitergeleitet, sodass alle Anwendungen unter benutzerfreundlichen URLs wie `home.local` oder `files.local` erreichbar sind und keine IP-Adressen oder Port-Nummern bekannt sein müssen. HTTPS wird über Caddys integrierte Zertifikatsverwaltung bereitgestellt, die für jede Domain automatisch ein selbstsigniertes Zertifikat ausstellt. Da diese Zertifikate nicht von einer öffentlich vertrauenswürdigen Zertifizierungsstelle signiert sind, zeigt der Browser beim erstmaligen Aufruf eine Sicherheitswarnung. Dies ist im lokalen Netzwerk jedoch unbedenklich: Der Datenverkehr ist trotz der Warnung verschlüsselt, was gegenüber einer unverschlüsselten HTTP-Verbindung deutlich mehr Sicherheit bietet.
 
 #pagebreak()
 
 === Technische Grundlagen der Anwendungen
-Die Anwendungen des Systems werden containerisiert betrieben. Durch den Einsatz von Containern wird eine klare Isolation zwischen den einzelnen Diensten erreicht. Dies erhöht sowohl die Sicherheit als auch die Wartbarkeit des Systems, da jede Anwendung in einer eigenen, voneinander unabhängigen Umgebung ausgeführt wird.
 
-Ein weiterer Vorteil dieser Architektur besteht darin, dass jede Anwendung ihre eigenen Abhängigkeiten und Laufzeitumgebungen mitbringen kann, ohne Konflikte mit anderen Diensten zu verursachen. Updates oder Änderungen an einem Dienst können somit durchgeführt werden, ohne den Betrieb der übrigen Anwendungen zu beeinträchtigen. Ein weiterer Vorteil, der sich dadurch ergibt, ist, dass jeder Entwickler mit der Sprache und den Tools arbeiten kann, die er am besten beherrscht. Die Technologien können bei containerisierten Anwendungen frei gewählt und über HTTP kann mit jeder Anwendung standardisiert interagiert werden.
+Der Großteil der Anwendungen wird containerisiert in einem gemeinsamen Podman-Pod betrieben. Durch den Einsatz von Containern wird eine klare Isolation zwischen den einzelnen Diensten erreicht. Dies erhöht sowohl die Sicherheit als auch die Wartbarkeit des Systems, da jede Anwendung in einer eigenen, voneinander unabhängigen Umgebung ausgeführt wird.
+
+Ein weiterer Vorteil dieser Architektur besteht darin, dass jede Anwendung ihre eigenen Abhängigkeiten und Laufzeitumgebungen mitbringen kann, ohne Konflikte mit anderen Diensten zu verursachen. Updates oder Änderungen an einem Dienst können somit durchgeführt werden, ohne den Betrieb der übrigen Anwendungen zu beeinträchtigen. Darüber hinaus kann jeder Entwickler die Programmiersprache und die Tools verwenden, die er am besten beherrscht, da die Technologien bei containerisierten Anwendungen frei gewählt werden können und die Interaktion über HTTP standardisiert ist.
+
+Das Home Dashboard stellt hierbei eine Ausnahme dar: Es wird als nativer systemd-Dienst direkt auf dem Host ausgeführt. Da es Konfigurationsdateien des Betriebssystems lesen und schreiben sowie systemd-Dienste wie `hostapd` programmatisch neu starten muss, ist eine enge Integration mit dem Host-System erforderlich, die aus einer containerisierten Umgebung heraus nur mit erheblichem Aufwand realisierbar wäre.
 
 ==== Home App
 
@@ -276,7 +273,7 @@ Der Messaging-Dienst „Local Chat“ ermöglicht eine direkte Kommunikation zwi
 
 Die Anwendung wurde in Python unter Verwendung des Webframeworks Flask entwickelt. Flask ist ein leichtgewichtiges Framework, das sich besonders für kleinere Webanwendungen und APIs eignet. Durch seine modulare Struktur ermöglicht es eine übersichtliche Implementierung der notwendigen Serverlogik.
 
-Für die Echtzeitkommunikation zwischen den Clients wird eine persistent gehaltene Verbindung zum Server verwendet, wodurch Nachrichten unmittelbar an alle Teilnehmer verteilt werden können. Neben einfachen Textnachrichten unterstützt der Dienst auch Gruppenchats sowie den Austausch von Dateien zwischen den Nutzern.
+Für die Echtzeitkommunikation zwischen den Clients werden WebSockets eingesetzt, die eine bidirektionale, dauerhaft offene Verbindung zwischen Client und Server ermöglichen, wodurch Nachrichten unmittelbar an alle verbundenen Teilnehmer verteilt werden können. Neben einfachen Textnachrichten unterstützt der Dienst auch Gruppenchats sowie den Austausch von Dateien zwischen den Nutzern.
 
 Die Benutzeroberfläche des Chat-Systems wird ebenfalls als Webanwendung bereitgestellt und kann über den Browser aufgerufen werden. Dadurch ist keine separate Installation auf den Endgeräten erforderlich, was die Nutzung insbesondere in heterogenen Umgebungen mit verschiedenen Betriebssystemen vereinfacht.
 
@@ -286,13 +283,13 @@ Die Benutzeroberfläche des Chat-Systems wird ebenfalls als Webanwendung bereitg
 
 Zunächst musste das OS auf die M.2 SSD geschrieben werden, da der RP standardmäßig nicht über einen USB-Stick oder dergleichen booten kann. Das passierte mit dem Raspberry Pi Imager. Dieser kann eine Auswahl an vorgefertigten Betriebssystemen auf einen gewünschten Speicher schreiben – in unserem Fall auf die M.2 SSD. Nachdem die SSD mit Raspberry Pi OS beschrieben worden ist, konnte diese auf dem HAT montiert werden. Der HAT wurde anschließend auf dem RP verbaut und entsprechend angeschlossen.
 
-Nun gibt es aber das Problem, dass der RP immer noch nicht automatisch von der SSD booten kann, da dies eine neuere Firmwareversion erfordert und einige Kompatibilitätsprobleme aufgetreten sind. So haben wir nach dem Einbau einer SSD trotzdem zunächst von einer SD-Karte mit Raspberry Pi OS gebootet, um die Firmware mit dem mitgelieferten Tool `rpi-eeprom-update` zu upgraden.
+Nun gab es aber das Problem, dass der RP immer noch nicht automatisch von der SSD booten konnte, da dies eine neuere Firmwareversion erfordert und einige Kompatibilitätsprobleme aufgetreten sind. So haben wir nach dem Einbau einer SSD trotzdem zunächst von einer SD-Karte mit Raspberry Pi OS gebootet, um die Firmware mit dem mitgelieferten Tool `rpi-eeprom-update` zu upgraden.
 
 Nachdem das Upgrade erfolgreich durchgeführt wurde, konnte der RP ohne weitere Konfiguration und ohne SD-Karte direkt von der M.2 SSD booten.
 
 == Erste OS-Konfiguration
 
-Die erste Konfiguration wurde ganz klassisch mit angeschlossenem Monitor, Maus und Tastatur durchgeführt. Da das aber viel Platz einnimmt und unpraktisch ist, haben wir zunächst SSH installiert und konfiguriert. Für die SSH-Anwendung haben wir uns hierbei für OpenSSH entschieden. Nachdem der SSH-Zugang konfiguriert wurde, konnten wir die restlichen Einstellungen bequem per SSH vornehmen, ohne das ganze Equipment dabei zu haben. Durch die anfangs entstandenen Kompatibilitätsprobleme haben wir uns kurzzeitig auch überlegt, das System im Vorhinein innerhalb einer virtuellen Maschine zu testen, bevor wir es auf den RP ausrollen.
+Die erste Konfiguration wurde ganz klassisch mit angeschlossenem Monitor, Maus und Tastatur durchgeführt. Da das aber viel Platz einnimmt und unpraktisch ist, haben wir zunächst SSH installiert und konfiguriert. Für die SSH-Anwendung haben wir uns hierbei für OpenSSH entschieden. Nachdem der SSH-Zugang konfiguriert wurde, konnten wir die restlichen Einstellungen bequem per SSH vornehmen, ohne das ganze Equipment dabei zu haben. Durch die anfangs entstandenen Kompatibilitätsprobleme haben wir uns kurzzeitig auch überlegt, das System zunächst innerhalb einer virtuellen Maschine zu testen, bevor wir es auf den RP ausrollen würden.
 
 == Netzwerkkonfiguration
 
@@ -513,68 +510,40 @@ betriebsfähig ist und die wichtigsten Komponenten miteinander zusammenarbeiten.
 
 Die Aufgaben wurden gleichmäßig auf die drei Teammitglieder verteilt, wobei jedes Mitglied einen spezifischen Verantwortungsbereich übernahm:
 
-=== Matthias Holme - System Design und Integration
+=== Matthias Holme – Systeminfrastruktur und Containerisierung
 
-*Verantwortungsbereich:*
-- Gesamtsystem-Architektur und Design
-- Hardware-Setup und Konfiguration
-  - Raspberry Pi 5 Einrichtung
-  - M.2 SSD Installation und Firmware-Updates
-  - PowerBank-Integration
-- Netzwerk-Infrastruktur
-  - hostapd Konfiguration
-  - dnsmasq DHCP/DNS-Setup
-- Container-Orchestrierung
-  - Podman-Quadlets Implementierung
-  - Systemd-Integration
-  - Service-Management
-- Systemintegration und Testing
-  - Sicherstellung der Zusammenarbeit aller Komponenten
-  - Performance-Optimierung
-  - Installations-Scripts
+Bei Matthias Holme lag der Schwerpunkt auf der Systeminfrastruktur. Dazu gehörten die Hardware-Konfiguration des Raspberry Pi 5 einschließlich der M.2 SSD-Installation mit HAT sowie die notwendigen Firmware-Updates. Das Betriebssystem wurde von ihm eingerichtet und konfiguriert. Ein weiterer Schwerpunkt lag auf der Containerisierung des Anwendungs-Stacks:
 
-=== Angelo Rodriguez - Home Dashboard & UI
+- Podman-Quadlets für alle containerisierten Dienste
+- systemd-Integration und Service-Management
+- Installationsskript für die automatisierte Einrichtung des Gesamtsystems
 
-*Verantwortungsbereich:*
-- Home Dashboard Entwicklung
-  - Rust + Actix Web Backend
-  - Maud HTML Templates
-  - HTMX-Integration
-  - Apple-inspiriertes UI-Design
-- Konfigurationsverwaltung
-  - WiFi-Hotspot-Einstellungen
-  - Programmatische Verwaltung der Systemkonfiguration
-  - Integration mit hostapd.conf
-- Frontend-Design
-  - CSS-Styling und Animationen
-  - Responsive Design
-  - UX-Optimierung
-- Enge Zusammenarbeit mit Matthias
-  - Integration der UI mit dem System
-  - Testing der Konfigurationsschnittstellen
+Hardware-Setup, Netzwerkkonfiguration und allgemeine Systemorchestrierung entstanden in enger Zusammenarbeit mit Angelo Rodriguez, da sich die Systemebene und die Anwendungsebene in der Home App direkt überschneiden.
 
-=== Erion Sahitaj - Chat-Anwendung
+=== Angelo Rodriguez – Home Dashboard und Anwendungsstack
 
-*Verantwortungsbereich:*
-- Design und Implementierung der lokalen Chat-Anwendung
-  - Architektur der Chat-Lösung
-  - Backend-Entwicklung
-  - Frontend-Interface
-- Funktionen
-  - Echtzeit-Messaging
-  - Offline-First Design
-  - Dateifreigabe
-  - Gruppenchats
-- Container-Integration
-  - Dockerfile und Deployment
-  - Integration in die Pocket-Surf-Infrastruktur
+Angelo Rodriguez verantwortete die Entwicklung der Home App sowie die Integration aller Dienste in den Gesamtstack. Die Home App ist eine Webanwendung, die in Rust mit Actix-web als Backend-Framework entwickelt wurde. Die Benutzeroberfläche wurde in HTML und CSS mit einem modernen, responsiven Design umgesetzt.
+
+Ein zentraler Bestandteil ist die Systemverwaltung aus der Anwendung heraus, insbesondere die Verwaltung der WLAN-Konfiguration. Daneben umfasste der Verantwortungsbereich:
+
+- Konfiguration des Reverse Proxys (Caddyfile)
+- Container-Integration der einzelnen Dienste in die Gesamtinfrastruktur
+- Abstimmung der Schnittstellen zwischen Anwendungs- und Systemebene
+
+Netzwerkkonfiguration und Systemorchestrierung wurden gemeinsam mit Matthias Holme erarbeitet.
+
+=== Erion Sahitaj – Chat-Anwendung
+
+Erion Sahitaj war für die Entwicklung der lokalen Chat-Anwendung zuständig. Die Anwendung wurde in Python mit dem Web-Framework Flask umgesetzt. Für die Echtzeit-Kommunikation zwischen den Clients kommen WebSockets zum Einsatz, über die Nachrichten unmittelbar an alle verbundenen Teilnehmer verteilt werden. Zum Verantwortungsbereich gehörten:
+
+- Backend-Entwicklung und Architektur der Chat-Lösung
+- Entwicklung der Browser-basierten Benutzeroberfläche
+- Offline-First Design und Dateifreigabe
+- Containerisierung mit Dockerfile und Integration in die Pocket-Surf-Infrastruktur
 
 === Gemeinsame Aufgaben
 
-- Dokumentation (Typst-Dokumente)
-- Präsentationsvorbereitung
-- Testing und Qualitätssicherung
-- Code-Reviews und gegenseitige Unterstützung
+Dokumentation, Präsentationsvorbereitung, Testing und gegenseitige Code-Reviews wurden gemeinsam von allen drei Teammitgliedern übernommen.
 
 == Herausforderungen und Lösungen
 
@@ -653,70 +622,76 @@ Die größte persönliche Erkenntnis war, dass Hardwareprojekte deutlich mehr Pl
 
 === Hardware-Limitierungen
 
-*Raspberry Pi als Proof-of-Concept:*
+Der Raspberry Pi 5 mit 8 GB RAM hat sich als ausreichend für einen Proof-of-Concept und für den Einsatz als persönlicher mobiler Server erwiesen. Für den Einsatz in einem echten produktiven Umfeld würde jedoch deutlich leistungsfähigere Hardware benötigt werden.
 
-Der Raspberry Pi 5 mit 8 GB RAM hat sich als ausreichend für einen Proof-of-Concept und für den Einsatz als persönlicher mobiler Server erwiesen. Für den Einsatz in einem echten produktiven Umfeld würde jedoch deutlich leistungsfähigere Hardware benötigt werden:
+*Architektur:* Ein produktives System würde eher auf x86_64-Architektur basieren — beispielsweise ein Intel NUC oder ein vergleichbarer Mini-PC — statt auf ARM. Dies bringt bessere Kompatibilität mit Standard-Software mit sich, da viele Dienste und Tools primär für x86_64 ausgelegt sind. Zudem ermöglicht x86_64 eine höhere CPU-Leistung für mehrere gleichzeitige Nutzer sowie deutlich mehr RAM-Erweiterbarkeit in Richtung 16–32 GB und darüber hinaus.
 
-- *Architektur:* Ein produktives System würde eher auf x86_64-Architektur basieren (z.B. Intel NUC, Mini-PC) statt ARM
-  - Bessere Kompatibilität mit Standard-Software
-  - Höhere CPU-Leistung für mehrere gleichzeitige Nutzer
-  - Mehr RAM-Erweiterbarkeit (16-32 GB+)
+*Leistung:* Der ARM-Prozessor des Raspberry Pi stößt bei mehreren parallel laufenden Container-Diensten an seine Grenzen. Dies macht sich konkret in längeren Build-Zeiten sowie einer eingeschränkten Skalierbarkeit bemerkbar, sobald mehrere Benutzer gleichzeitig auf die Dienste zugreifen.
 
-- *Leistung:* Der ARM-Prozessor des Raspberry Pi stößt bei mehreren Container-Services an seine Grenzen
-  - Längere Build-Zeiten
-  - Eingeschränkte Skalierbarkeit
+*Zuverlässigkeit:* Enterprise-Hardware bietet darüber hinaus eine bessere Zuverlässigkeit und professionellen Support. Dazu gehören ECC-RAM für erhöhte Datensicherheit, redundante Speicheroptionen zum Schutz vor Datenverlust sowie erstklassiger Hardware-Support durch den Hersteller.
 
-- *Zuverlässigkeit:* Enterprise-Hardware bietet bessere Zuverlässigkeit und Support
-  - ECC-RAM für Datensicherheit
-  - Redundante Speicher-Optionen
-  - Erstklassiger Hardware-Support
-
-*Empfehlung für Produktivbetrieb:*
-
-Ein Mini-PC mit x86_64-Architektur, mindestens 16 GB RAM, und einer NVMe-SSD wäre für einen Produktiveinsatz besser geeignet. Der Raspberry Pi ist jedoch ideal für:
-- Prototyping und Proof-of-Concept
-- Persönliche/Hobby-Projekte
-- Lernumgebungen
-- Günstige Beschaffung
-- Geringe Nutzerlast (1-3 Benutzer)
+*Empfehlung für Produktivbetrieb:* Ein Mini-PC mit x86_64-Architektur, mindestens 16 GB RAM und einer NVMe-SSD wäre für einen produktiven Betrieb deutlich besser geeignet. Der Raspberry Pi ist jedoch ideal für Prototyping und Proof-of-Concept-Projekte, persönliche Hobby-Projekte, Lernumgebungen, Szenarien mit günstiger Beschaffung (vor Hardware-Engpässen) sowie für Setups mit geringer Nutzerlast von ein bis drei gleichzeitigen Benutzern.
 
 === Dokumentation ist essentiell
 
-Die ausführliche Dokumentation aller Konfigurationsschritte hat sich als wertvoll erwiesen:
-- Reproduzierbarkeit der Installation
-- Fehlersuche vereinfacht
-- Wissensvermittlung im Team
-- Grundlage für zukünftige Erweiterungen
+Die ausführliche Dokumentation aller Konfigurationsschritte hat sich als wertvoll erwiesen. Durch sie ist die Installation jederzeit reproduzierbar, ohne dass Wissen verloren geht oder Schritte rekonstruiert werden müssen. Bei der Fehlersuche erleichtert eine gute Dokumentation das Nachvollziehen von Konfigurationsentscheidungen erheblich. Innerhalb des Teams dient sie der Wissensvermittlung, damit alle Mitglieder das Gesamtsystem verstehen und weiterentwickeln können. Nicht zuletzt bildet sie die Grundlage für zukünftige Erweiterungen des Systems.
 
 === Container-Orchestrierung vereinfacht Deployment
 
-Die Verwendung von Podman mit systemd-Quadlets hat mehrere Vorteile gebracht:
-- Einfaches Service-Management über systemd wie klassische Linux Services
-- Automatische Neustarts bei Fehlern
-- Klare Trennung der Services (Isolation)
-- Vereinfachte Updates einzelner Komponenten
+Die Verwendung von Podman mit systemd-Quadlets hat mehrere praktische Vorteile gebracht. Da die Container als reguläre systemd-Dienste verwaltet werden, lässt sich das Service-Management mit denselben Werkzeugen wie bei klassischen Linux-Diensten durchführen. Fällt ein Container aus, startet systemd ihn automatisch neu, ohne manuellen Eingriff. Die Isolation der einzelnen Dienste voneinander erhöht die Sicherheit und verhindert, dass Fehler in einem Dienst andere beeinträchtigen. Updates oder Konfigurationsänderungen an einem einzelnen Dienst lassen sich durchführen, ohne den Rest des Systems zu unterbrechen.
 
 === Offline-First Design erfordert Planung
 
-Die Anforderung, dass alle Services offline funktionieren müssen, erforderte bewusste Technologie-Entscheidungen:
-- Speicherung von Daten in lokalen Datenbank wie SQLite oder direkt auf dem Client Gerät.
-- Keine Abhängigkeiten von CDNs für Skripte, CSS oder andere Assets
-- Lokale Authentifizierung (kein SSO über Identity Anbieter wie Azure)
+Die Anforderung, dass alle Dienste ohne Internetverbindung funktionieren müssen, erforderte bewusste Technologie-Entscheidungen bei der Auswahl und Konfiguration jeder Komponente. Alle Dienste speichern ihre Daten lokal, entweder in einer lokalen Datenbank wie SQLite oder direkt auf dem Dateisystem des Servers. Sämtliche Web-Assets wie Skripte, CSS-Dateien und Schriftarten werden lokal ausgeliefert, da Abhängigkeiten von externen CDNs im Offline-Betrieb nicht funktionieren würden. Authentifizierung erfolgt ausschließlich lokal, ohne externe Identity-Provider wie etwa Azure Active Directory, da diese eine Internetverbindung voraussetzen.
 
 === Hardware-Kompatibilität prüfen
 
-Die SSD-Kompatibilitätsprobleme haben gezeigt, dass auch bei standardisierten Schnittstellen Kompatibilitätsprobleme auftreten können. Vor dem Kauf sollte:
-- Community-Feedback überprüft werden
-- Kompatibilitätslisten konsultiert werden
-- Testphasen eingeplant werden
-- Alternativ-Optionen offen gehalten werden
+Die SSD-Kompatibilitätsprobleme haben gezeigt, dass auch bei standardisierten Schnittstellen wie M.2 unerwartete Kompatibilitätsprobleme auftreten können. Vor dem Kauf von Hardware-Komponenten sollte daher Community-Feedback zu den gewählten Kombinationen eingeholt und offizielle Kompatibilitätslisten konsultiert werden. Für die Einplanung von Testphasen zur Überprüfung der Kompatibilität vor dem eigentlichen Projektbeginn ist ausreichend Zeit vorzusehen. Darüber hinaus empfiehlt es sich, Alternativoptionen offen zu halten und nicht ausschließlich auf eine einzelne Komponente zu setzen.
 
 #pagebreak()
 
-= Anhang
+#set page(numbering: none)
 
-== Anhang A: Quellcode-Auszüge
+= Quellen
 
-== Anhang B: Konfigurationsdateien
+// KI-Hilfsmittel
+N. N.: ChatGPT – KI-Assistent. URL: https://chatgpt.com
 
-== Anhang C: Zusätzliche Dokumentation
+N. N.: Claude – KI-Assistent. URL: https://claude.ai
+
+// Hardware & Betriebssystem
+N. N.: Raspberry Pi – Offizielle Website. URL: https://www.raspberrypi.com
+
+// Protokolle & Standards
+N. N.: Wikipedia – Dynamic Host Configuration Protocol (DHCP). URL: https://de.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol
+
+N. N.: Wikipedia – Domain Name System (DNS). URL: https://de.wikipedia.org/wiki/Domain_Name_System
+
+N. N.: Wikipedia – Secure Shell (SSH). URL: https://de.wikipedia.org/wiki/Secure_Shell
+
+// Sprachen & Frameworks
+N. N.: OpenSSH – Offizielle Website. URL: https://www.openssh.com
+
+N. N.: Rust – Offizielle Website. URL: https://www.rust-lang.org
+
+N. N.: Python – Offizielle Website. URL: https://www.python.org
+
+N. N.: Flask – Dokumentation. URL: https://flask.palletsprojects.com
+
+N. N.: Actix Web – Dokumentation. URL: https://actix.rs
+
+// Infrastruktur-Tools
+N. N.: Podman – Offizielle Website. URL: https://podman.io
+
+N. N.: Caddy – Offizielle Website. URL: https://caddyserver.com
+
+N. N.: hostapd – Dokumentation. URL: https://w1.fi/hostapd/
+
+N. N.: dnsmasq – Dokumentation. URL: https://thekelleys.org.uk/dnsmasq/doc.html
+
+// Eingesetzte Dienste
+N. N.: SFTPGo – Projektseite. URL: https://github.com/drakkan/sftpgo
+
+N. N.: Vikunja – Offizielle Website. URL: https://vikunja.io
+
+N. N.: BookStack – Offizielle Website. URL: https://www.bookstackapp.com

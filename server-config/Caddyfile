@@ -1,47 +1,47 @@
 # Caddyfile for Pocket Surf
 # Central reverse proxy routing all services
-# Running in Podman pod - all services accessible via localhost
+# Running in Podman pod with host networking - all services accessible via localhost
 
-# Global options
 {
-    # Disable automatic HTTPS for local network
-    auto_https off
-
-    # Admin API endpoint
     admin off
 }
 
 # Home Dashboard
 home.local, pocket.local {
+    tls internal
     reverse_proxy localhost:3000
     log
 }
 
 # SFTPGo File Server
 files.local {
+    tls internal
     reverse_proxy localhost:8080
     log
 }
 
 # Vikunja Task Management
 tasks.local {
+    tls internal
     reverse_proxy localhost:3456
     log
 }
 
 # BookStack Knowledge Base
 wiki.local {
+    tls internal
     reverse_proxy localhost:6875
     log
 }
 
 # Local Chat Application
 chat.local {
+    tls internal
     reverse_proxy localhost:8000
     log
 }
 
-# Catch-all: redirect to home
+# Redirect plain HTTP to home dashboard
 :80 {
-    redir http://home.local{uri}
+    redir https://home.local{uri} 301
 }
