@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::io::{self, BufRead, BufReader, Write};
+use std::io::{self, BufRead, BufReader};
 use std::path::Path;
+use bcrypt::{hash, verify, DEFAULT_COST};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WifiConfig {
@@ -27,7 +28,7 @@ impl WifiConfig {
     fn get_hostapd_path() -> String {
         std::env::var("CONFIG_PATH")
             .map(|p| format!("{}/hostapd.conf", p))
-            .unwrap_or_else(|_| "/config/hostapd.conf".to_string())
+            .unwrap_or_else(|_| "hostapd.conf".to_string())
     }
 
     /// Read current WiFi configuration from hostapd.conf
@@ -242,5 +243,88 @@ impl SystemStatus {
         // For now, return placeholder values
         // In production, use nix or libc bindings for statvfs
         Ok((256 * 1024 * 1024 * 1024, 64 * 1024 * 1024 * 1024)) // 256GB total, 64GB used
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AuthConfig {
+    pub password_hash: String,
+}
+
+impl Default for AuthConfig {
+    fn default() -> Self {
+        // Default password is "admin" - should be changed on first use
+        let default_hash = hash("admin", DEFAULT_COST).unwrap_or_else(|_| String::new());
+        Self {
+            password_hash: default_hash,
+        }
+    }
+}
+
+impl AuthConfig {
+    /// Get the path to auth.json from environment or use default
+    fn get_auth_path() -> String {
+        std::env::var("CONFIG_PATH")
+            .map(|p| format!("{}/auth.json", p))
+            .unwrap_or_else(|_| "auth.json".to_string())
+    }
+
+    /// Read authentication configuration
+    pub fn read() -> io::Result<Self> {
+        let path_str = Self::get_auth_path();
+        let path = Path::new(&path_str);
+
+        if !path.exists() {
+            // Create default config if doesn't exist
+            let config = Self::default();
+            config.write()?;
+            return Ok(config);
+        }
+
+        let content = fs::read_to_string(path)?;
+        serde_json::from_str(&content)
+            .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
+    }
+
+    /// Write authentication configuration
+    pub fn write(&self) -> io::Result<()> {
+        let content = serde_json::to_string_pretty(self)
+            .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+        let path = Self::get_auth_path();
+
+        // Write to temp file first, then move
+        let temp_path = format!("{}.tmp", path);
+        fs::write(&temp_path, content)?;
+        fs::rename(&temp_path, &path)?;
+
+        Ok(())
+    }
+
+    /// Verify a password against the stored hash
+    pub fn verify_password(&self, password: &str) -> bool {
+        verify(password, &self.password_hash).unwrap_or(false)
+    }
+
+    /// Change the password (returns new AuthConfig with updated hash)
+    pub fn change_password(&self, new_password: &str) -> io::Result<Self> {
+        let new_hash = hash(new_password, DEFAULT_COST)
+            .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e.to_string()))?;
+
+        Ok(Self {
+            password_hash: new_hash,
+        })
+    }
+
+    /// Validate password requirements
+    pub fn validate_password(password: &str) -> Result<(), String> {
+        if password.len() < 6 {
+            return Err("Passwort muss mindestens 6 Zeichen lang sein".to_string());
+        }
+
+        if password.len() > 128 {
+            return Err("Passwort darf maximal 128 Zeichen lang sein".to_string());
+        }
+
+        Ok(())
     }
 }

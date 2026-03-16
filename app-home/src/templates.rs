@@ -1,5 +1,15 @@
 use maud::{html, Markup, DOCTYPE};
 
+/// Reusable back button component
+fn back_button(href: &str) -> Markup {
+    html! {
+        a href=(href) class="back-link" {
+            span style="margin-right: 0.5rem;" { "◀" }
+            "Zurück"
+        }
+    }
+}
+
 pub fn base(title: &str, content: Markup) -> Markup {
     html! {
         (DOCTYPE)
@@ -8,10 +18,8 @@ pub fn base(title: &str, content: Markup) -> Markup {
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1.0";
                 title { (title) }
-                script src="https://unpkg.com/htmx.org@2.0.0" {}
-                style {
-                    (include_str!("styles.css"))
-                }
+                script src="/static/htmx.js" {}
+                link rel="stylesheet" href="/static/styles.css";
             }
             body {
                 (content)
@@ -75,7 +83,7 @@ pub fn home_page() -> Markup {
         }
 
         script {
-            (r#"
+            (maud::PreEscaped(r#"
             function toggleMenu() {
                 const menu = document.getElementById('menu');
                 menu.classList.toggle('show');
@@ -88,16 +96,16 @@ pub fn home_page() -> Markup {
                     menu.classList.remove('show');
                 }
             });
-            "#)
+            "#))
         }
     })
 }
 
-pub fn settings_page() -> Markup {
+pub fn settings_page_with_message(message: Option<(&str, bool)>) -> Markup {
     base("Einstellungen", html! {
         nav class="navbar" {
             div class="nav-content" {
-                a href="/" class="back-link" { "← Zurück" }
+                (back_button("/"))
                 div class="nav-logo" { "⚙️ Einstellungen" }
             }
         }
@@ -106,6 +114,18 @@ pub fn settings_page() -> Markup {
 
         div class="content-wrapper" {
             main class="settings-main" {
+                @if let Some((msg, is_success)) = message {
+                    @if is_success {
+                        div class="alert alert-success" {
+                            "✓ " (msg)
+                        }
+                    } @else {
+                        div class="alert alert-error" {
+                            "✗ " (msg)
+                        }
+                    }
+                }
+
                 div class="settings-list" {
                     a href="/settings/wifi" class="settings-item" {
                         div class="settings-item-icon" { "📡" }
@@ -115,33 +135,77 @@ pub fn settings_page() -> Markup {
                         }
                         div class="settings-item-arrow" { "›" }
                     }
-                    a href="/settings/services" class="settings-item" {
-                        div class="settings-item-icon" { "📦" }
+                }
+
+                div class="settings-list" style="margin-top: 2rem;" {
+                    div class="settings-item" style="cursor: default;" {
+                        div class="settings-item-icon" { "🔐" }
                         div class="settings-item-content" {
-                            div class="settings-item-title" { "Services" }
-                            div class="settings-item-subtitle" { "Dienste verwalten" }
+                            div class="settings-item-title" { "Sicherheit" }
                         }
-                        div class="settings-item-arrow" { "›" }
                     }
-                    a href="/settings/network" class="settings-item" {
-                        div class="settings-item-icon" { "🌐" }
-                        div class="settings-item-content" {
-                            div class="settings-item-title" { "Netzwerk" }
-                            div class="settings-item-subtitle" { "IP-Adressen und DNS" }
-                        }
-                        div class="settings-item-arrow" { "›" }
+                }
+
+                form
+                    action="/api/password/change"
+                    method="post"
+                    class="wifi-form"
+                    style="margin-top: 1rem;"
+                {
+                    h3 { "Passwort ändern" }
+
+                    div class="form-group" {
+                        label for="current_password" { "Aktuelles Passwort" }
+                        input
+                            type="password"
+                            id="current_password"
+                            name="current_password"
+                            required;
                     }
+
+                    div class="form-group" {
+                        label for="new_password" { "Neues Passwort" }
+                        input
+                            type="password"
+                            id="new_password"
+                            name="new_password"
+                            minlength="6"
+                            required;
+                        small { "Mindestens 6 Zeichen" }
+                    }
+
+                    div class="form-group" {
+                        label for="confirm_password" { "Passwort bestätigen" }
+                        input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            minlength="6"
+                            required;
+                    }
+
+                    div class="form-actions" {
+                        button type="submit" class="btn btn-primary" { "Passwort ändern" }
+                    }
+                }
+
+                form action="/api/logout" method="post" style="margin-top: 2rem;" {
+                    button type="submit" class="btn btn-secondary" style="width: 100%;" { "Abmelden" }
                 }
             }
         }
     })
 }
 
-pub fn wifi_settings(config: &crate::config::WifiConfig) -> Markup {
+pub fn settings_page() -> Markup {
+    settings_page_with_message(None)
+}
+
+pub fn wifi_settings_with_message(config: &crate::config::WifiConfig, message: Option<(&str, bool)>) -> Markup {
     base("WiFi Einstellungen", html! {
         nav class="navbar" {
             div class="nav-content" {
-                a href="/settings" class="back-link" { "← Einstellungen" }
+                (back_button("/settings"))
                 div class="nav-logo" { "📡 WiFi Hotspot" }
             }
         }
@@ -150,9 +214,21 @@ pub fn wifi_settings(config: &crate::config::WifiConfig) -> Markup {
 
         div class="content-wrapper" {
             main class="settings-main" {
+                @if let Some((msg, is_success)) = message {
+                    @if is_success {
+                        div class="alert alert-success" {
+                            "✓ " (msg)
+                        }
+                    } @else {
+                        div class="alert alert-error" {
+                            "✗ " (msg)
+                        }
+                    }
+                }
+
                 form
-                    hx-post="/api/wifi/update"
-                    hx-swap="outerHTML"
+                    action="/api/wifi/update"
+                    method="post"
                     class="wifi-form"
                 {
                     div class="form-group" {
@@ -206,18 +282,68 @@ pub fn wifi_settings(config: &crate::config::WifiConfig) -> Markup {
     })
 }
 
-pub fn success_message(message: &str) -> Markup {
-    html! {
-        div class="alert alert-success" {
-            "✓ " (message)
-        }
-    }
+pub fn wifi_settings(config: &crate::config::WifiConfig) -> Markup {
+    wifi_settings_with_message(config, None)
 }
 
-pub fn error_message(message: &str) -> Markup {
-    html! {
-        div class="alert alert-error" {
-            "✗ " (message)
+pub fn login_page_with_message(error_msg: Option<&str>) -> Markup {
+    base("Anmelden", html! {
+        nav class="navbar" {
+            div class="nav-content" {
+                a href="/" class="back-link" { "◀" }
+                div class="nav-logo" { "🔐 Anmelden" }
+            }
         }
-    }
+
+        div class="background" {}
+
+        div class="content-wrapper" {
+            main class="settings-main" {
+                @if let Some(msg) = error_msg {
+                    div class="alert alert-error" {
+                        "✗ " (msg)
+                    }
+                }
+
+                form
+                    action="/api/login"
+                    method="post"
+                    class="wifi-form"
+                {
+                    h2 { "Einstellungen Anmelden" }
+                    p style="color: var(--text-light); margin-bottom: 2rem;" {
+                        "Bitte geben Sie das Admin-Passwort ein, um auf die Einstellungen zuzugreifen."
+                    }
+
+                    div class="form-group" {
+                        label for="password" { "Passwort" }
+                        input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            autofocus;
+                    }
+
+                    div class="form-actions" {
+                        button type="submit" class="btn btn-primary" { "Anmelden" }
+                    }
+                }
+
+                div class="info-box" style="margin-top: 2rem;" {
+                    p {
+                        strong { "Standard-Passwort: " }
+                        code { "admin" }
+                    }
+                    p style="margin-top: 0.5rem; font-size: 0.9rem;" {
+                        "Bitte ändern Sie das Passwort nach dem ersten Anmelden."
+                    }
+                }
+            }
+        }
+    })
+}
+
+pub fn login_page() -> Markup {
+    login_page_with_message(None)
 }
