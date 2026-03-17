@@ -20,7 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ---------------------------------------------------------------------------
 echo "[1/8] Installing required packages..."
 apt update
-apt install -y hostapd dnsmasq podman build-essential pkg-config libssl-dev curl
+apt install -y hostapd dnsmasq podman dhcpcd build-essential pkg-config libssl-dev curl
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 export PATH="$HOME/.cargo/bin:$PATH"
 
@@ -59,6 +59,8 @@ if ! grep -q "^DAEMON_CONF=" /etc/default/hostapd; then
 else
     sed -i 's|^DAEMON_CONF=.*|DAEMON_CONF="/etc/pocket-surf/hostapd.conf"|' /etc/default/hostapd
 fi
+
+ln -s /etc/pocket-surf/hostapd.conf /etc/hostapd/hostapd.conf
 echo "    hostapd configured to use /etc/pocket-surf/hostapd.conf"
 
 # Override dnsmasq to use our config file instead of /etc/dnsmasq.conf
@@ -74,7 +76,7 @@ EOF
 # ---------------------------------------------------------------------------
 echo "[4/8] Enabling IP forwarding..."
 echo "net.ipv4.ip_forward = 1" | sudo tee /etc/sysctl.d/99-ipforward.conf
-sysctl -p
+# sysctl -p
 
 # ---------------------------------------------------------------------------
 # [5/8] Build and install the Home Dashboard (Rust, runs natively)
