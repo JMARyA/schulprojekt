@@ -66,22 +66,42 @@ echo "    hostapd configured to use /etc/pocket-surf/hostapd.conf"
 # Override dnsmasq to use our config file instead of /etc/dnsmasq.conf
 mkdir -p /etc/systemd/system/dnsmasq.service.d
 cat > /etc/systemd/system/dnsmasq.service.d/pocket-surf.conf << 'EOF'
+[Unit]
+After=dhcpcd.service
+Wants=dhcpcd.service
+
 [Service]
 ExecStart=
 ExecStart=/usr/sbin/dnsmasq --keep-in-foreground --conf-file=/etc/pocket-surf/dnsmasq.conf
+Restart=on-failure
+RestartSec=5
 EOF
 
 # ---------------------------------------------------------------------------
-# [4/8] Enable IP forwarding
+# [4/8] Disable systemd-resolved to prevent port 53 conflict
 # ---------------------------------------------------------------------------
-echo "[4/8] Enabling IP forwarding..."
+echo "[4/8] Disabling systemd-resolved..."
+if systemctl is-active --quiet systemd-resolved; then
+    echo "    Stopping systemd-resolved (conflicts with dnsmasq)"
+    systemctl stop systemd-resolved
+    systemctl disable systemd-resolved
+    # Remove the symlink that systemd-resolved creates
+    rm -f /etc/resolv.conf
+    # Create a simple resolv.conf pointing to localhost (dnsmasq will handle DNS)
+    echo "nameserver 127.0.0.1" > /etc/resolv.conf
+fi
+
+# ---------------------------------------------------------------------------
+# [5/8] Enable IP forwarding
+# ---------------------------------------------------------------------------
+echo "[5/8] Enabling IP forwarding..."
 echo "net.ipv4.ip_forward = 1" | sudo tee /etc/sysctl.d/99-ipforward.conf
 # sysctl -p
 
 # ---------------------------------------------------------------------------
-# [5/8] Build and install the Home Dashboard (Rust, runs natively)
+# [6/8] Build and install the Home Dashboard (Rust, runs natively)
 # ---------------------------------------------------------------------------
-echo "[5/8] Building Home Dashboard..."
+echo "[6/8] Building Home Dashboard..."
 cd "$SCRIPT_DIR/../app-home"
 cargo build --release
 install -m 755 target/release/pocket-surf-home /usr/local/bin/pocket-surf-home
@@ -90,9 +110,9 @@ cd "$SCRIPT_DIR"
 cp "$SCRIPT_DIR/pocket-surf-home.service" /etc/systemd/system/pocket-surf-home.service
 
 # ---------------------------------------------------------------------------
-# [6/8] Enable and start host-level services
+# [7/8] Enable and start host-level services
 # ---------------------------------------------------------------------------
-echo "[6/8] Enabling host services..."
+echo "[7/8] Enabling host services..."
 systemctl daemon-reload
 systemctl unmask hostapd
 systemctl enable hostapd dnsmasq pocket-surf-home
@@ -102,7 +122,7 @@ systemctl restart dnsmasq
 systemctl restart pocket-surf-home
 
 # ---------------------------------------------------------------------------
-# [7/8] Build chat container image and install Podman quadlets
+# [8/8] Build chat container image and install Podman quadlets
 # ---------------------------------------------------------------------------
 
 # TODO : Integrate ; Not Avail Right Now
@@ -118,9 +138,9 @@ cp "$SCRIPT_DIR/quadlets/*.pod"       /etc/containers/systemd/
 cp "$SCRIPT_DIR/quadlets/*.container" /etc/containers/systemd/
 
 # ---------------------------------------------------------------------------
-# [8/8] Start container services via systemd
+# [9/9] Start container services via systemd
 # ---------------------------------------------------------------------------
-echo "[8/8] Starting container services..."
+echo "[9/9] Starting container services..."
 systemctl daemon-reload
 systemctl enable --now pocket-surf.pod.service
 
