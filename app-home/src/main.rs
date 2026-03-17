@@ -6,9 +6,6 @@ use actix_web::{middleware, web, App, HttpServer, cookie::Key};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use std::io;
 
-# TODO : back button redesign
-# TODO : integrate into installer / systemd unit workdir
-
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     // Initialize logger

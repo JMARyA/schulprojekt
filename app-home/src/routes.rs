@@ -142,7 +142,10 @@ pub async fn about() -> Result<HttpResponse> {
     let html = templates::base("Über Pocket Surf", maud::html! {
         nav class="navbar" {
             div class="nav-content" {
-                a href="/" class="back-link" { "◀" }
+                a href="/" class="back-link" {
+                    span style="margin-right: 0.5rem;" { "◀" }
+                    "Zurück"
+                }
                 div class="nav-logo" { "ℹ️ Über" }
             }
         }

@@ -290,7 +290,7 @@ pub fn login_page_with_message(error_msg: Option<&str>) -> Markup {
     base("Anmelden", html! {
         nav class="navbar" {
             div class="nav-content" {
-                a href="/" class="back-link" { "◀" }
+                (back_button("/"))
                 div class="nav-logo" { "🔐 Anmelden" }
             }
         }

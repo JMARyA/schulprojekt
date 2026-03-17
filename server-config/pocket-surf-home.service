@@ -6,9 +6,9 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=root
+WorkingDirectory=/etc/pocket-surf
 ExecStart=/usr/local/bin/pocket-surf-home
 Environment=RUST_LOG=info
-Environment=CONFIG_PATH=/etc/pocket-surf
 Restart=on-failure
 RestartSec=5s
 

@@ -42,12 +42,22 @@ fi
 echo "[3/8] Deploying configuration files..."
 mkdir -p /etc/pocket-surf
 
-cp "$SCRIPT_DIR/hostapd.conf"  /etc/pocket-surf/hostapd.conf
+# Copy initial hostapd.conf if it doesn't exist (app will manage it)
+if [ ! -f /etc/pocket-surf/hostapd.conf ]; then
+    cp "$SCRIPT_DIR/hostapd.conf" /etc/pocket-surf/hostapd.conf
+    echo "    Installed initial hostapd.conf (app-managed)"
+fi
+
 cp "$SCRIPT_DIR/dnsmasq.conf"  /etc/pocket-surf/dnsmasq.conf
 cp "$SCRIPT_DIR/Caddyfile"     /etc/pocket-surf/Caddyfile
 
-# Point hostapd to our config file
-sed -i 's|#DAEMON_CONF=""|DAEMON_CONF="/etc/pocket-surf/hostapd.conf"|' /etc/default/hostapd
+# Point hostapd to app-managed config file
+if ! grep -q "^DAEMON_CONF=" /etc/default/hostapd; then
+    sed -i 's|#DAEMON_CONF=""|DAEMON_CONF="/etc/pocket-surf/hostapd.conf"|' /etc/default/hostapd
+else
+    sed -i 's|^DAEMON_CONF=.*|DAEMON_CONF="/etc/pocket-surf/hostapd.conf"|' /etc/default/hostapd
+fi
+echo "    hostapd configured to use /etc/pocket-surf/hostapd.conf"
 
 # Override dnsmasq to use our config file instead of /etc/dnsmasq.conf
 mkdir -p /etc/systemd/system/dnsmasq.service.d
@@ -90,10 +100,13 @@ systemctl restart pocket-surf-home
 # ---------------------------------------------------------------------------
 # [7/8] Build chat container image and install Podman quadlets
 # ---------------------------------------------------------------------------
-echo "[7/8] Building Chat container image..."
-cd "$SCRIPT_DIR/../app-chat"
-podman build -t localhost/pocket-surf-chat:latest .
-cd "$SCRIPT_DIR"
+
+# TODO : Integrate ; Not Avail Right Now
+
+#echo "[7/8] Building Chat container image..."
+#cd "$SCRIPT_DIR/../app-chat"
+#podman build -t localhost/pocket-surf-chat:latest .
+#cd "$SCRIPT_DIR"
 
 echo "      Installing Podman quadlets..."
 mkdir -p /etc/containers/systemd
