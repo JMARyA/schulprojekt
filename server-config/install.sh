@@ -114,8 +114,8 @@ systemctl restart pocket-surf-home
 
 echo "      Installing Podman quadlets..."
 mkdir -p /etc/containers/systemd
-cp "$SCRIPT_DIR/quadlets/"*.pod       /etc/containers/systemd/
-cp "$SCRIPT_DIR/quadlets/"*.container /etc/containers/systemd/
+cp "$SCRIPT_DIR/quadlets/*.pod"       /etc/containers/systemd/
+cp "$SCRIPT_DIR/quadlets/*.container" /etc/containers/systemd/
 
 # ---------------------------------------------------------------------------
 # [8/8] Start container services via systemd
