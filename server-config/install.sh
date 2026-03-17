@@ -20,7 +20,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ---------------------------------------------------------------------------
 echo "[1/8] Installing required packages..."
 apt update
-apt install -y hostapd dnsmasq podman
+apt install -y hostapd dnsmasq podman build-essential pkg-config libssl-dev curl
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # ---------------------------------------------------------------------------
 # [2/8] Configure static IP on wlan0
@@ -71,7 +73,7 @@ EOF
 # [4/8] Enable IP forwarding
 # ---------------------------------------------------------------------------
 echo "[4/8] Enabling IP forwarding..."
-sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+echo "net.ipv4.ip_forward = 1" | sudo tee /etc/sysctl.d/99-ipforward.conf
 sysctl -p
 
 # ---------------------------------------------------------------------------
