@@ -60,7 +60,7 @@ else
     sed -i 's|^DAEMON_CONF=.*|DAEMON_CONF="/etc/pocket-surf/hostapd.conf"|' /etc/default/hostapd
 fi
 
-ln -s /etc/pocket-surf/hostapd.conf /etc/hostapd/hostapd.conf
+ln -s /etc/pocket-surf/hostapd.conf /etc/hostapd/hostapd.conf || true
 echo "    hostapd configured to use /etc/pocket-surf/hostapd.conf"
 
 # Override dnsmasq to use our config file instead of /etc/dnsmasq.conf
